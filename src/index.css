@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+  }
+
+  body {
+    background-image: radial-gradient(circle at center, rgba(19, 19, 20, 0.4) 0%, rgba(19, 19, 20, 0.85) 100%), url('/bg-cyber.jpg');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    color: #e5e2e3;
+    overflow-x: hidden;
+    position: relative;
+    font-family: 'Inter', sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Cursor Glow set on top of everything but clicking through */
+  .cursor-glow {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle 350px at var(--mouse-x) var(--mouse-y), rgba(193, 193, 255, 0.09), transparent 85%);
+    z-index: 9999; /* Higher z-index to overlay text/cards */
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .glass-card:hover {
+    border-color: rgba(193, 193, 255, 0.25);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 30px -5px rgba(193, 193, 255, 0.05);
+  }
+
+  .skill-glow:hover {
+    box-shadow: 0 0 25px rgba(193, 193, 255, 0.2), 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    border-color: rgba(193, 193, 255, 0.4);
+    background: rgba(193, 193, 255, 0.06);
+    transform: translateY(-6px);
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    transition: transform 0.3s ease;
+  }
+
+  /* Floating keyframe animation */
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .interactive-btn {
+    transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .interactive-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 25px -5px rgba(193, 193, 255, 0.35);
+  }
+
+  /* Project hover special classes */
+  .project-card:hover .project-image {
+    transform: scale(1.08) rotate(2deg);
+  }
+
+  .project-card:hover .project-arrow {
+    transform: translate(3px, -3px);
+  }
+}
+
+/* Explicit Font Family overrides for Vietnamese compatibility */
+.font-display-xl,
+.font-display-xl-mobile,
+.font-headline-lg,
+.font-headline-lg-mobile,
+.font-headline-md {
+  font-family: 'Be Vietnam Pro', sans-serif !important;
+}
+
+.font-body-lg,
+.font-body-md {
+  font-family: 'Inter', sans-serif !important;
+}
+
+.font-label-mono {
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* Scroll Snapping for Desktop Screens */
+@media (min-width: 1024px) {
+  html.enable-snap {
+    scroll-behavior: auto !important;
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 0px;
+  }
+  
+  html.enable-snap #hero,
+  html.enable-snap #work {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+}
+
