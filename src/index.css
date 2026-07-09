@@ -9,11 +9,7 @@
   }
 
   body {
-    background-image: radial-gradient(circle at center, rgba(19, 19, 20, 0.4) 0%, rgba(19, 19, 20, 0.85) 100%), url('/bg-cyber.jpg');
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+    background-color: #131314;
     color: #e5e2e3;
     overflow-x: hidden;
     position: relative;

@@ -53,7 +53,7 @@ export default function Work() {
               <div className="h-48 relative overflow-hidden border-b border-white/10 group flex items-center justify-center">
                 {proj.image ? (
                   <img 
-                    src={proj.image} 
+                    src={`${import.meta.env.BASE_URL}${proj.image.replace(/^\//, '')}`} 
                     alt={proj.title}
                     className="w-full h-full object-cover project-image transition-all duration-500"
                     onError={(e) => {

@@ -32,8 +32,20 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Đường dẫn ảnh nền động tương thích với cả local và GitHub Pages
+  const bgUrl = `${import.meta.env.BASE_URL}bg-cyber.jpg`;
+
   return (
-    <>
+    <div 
+      style={{ 
+        backgroundImage: `radial-gradient(circle at center, rgba(19, 19, 20, 0.4) 0%, rgba(19, 19, 20, 0.85) 100%), url('${bgUrl}')`,
+        backgroundAttachment: 'fixed',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center center',
+        backgroundRepeat: 'no-repeat'
+      }} 
+      className="min-h-screen text-on-surface relative overflow-x-hidden"
+    >
       {/* Background Interactive Mouse Glow */}
       <CursorGlow />
 
@@ -51,7 +63,7 @@ function App() {
 
       {/* Footer */}
       <Footer />
-    </>
+    </div>
   );
 }
 
