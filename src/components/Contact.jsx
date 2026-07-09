@@ -20,19 +20,20 @@ export default function Contact() {
             'Accept': 'application/json'
           },
           body: JSON.stringify({
-            Name: formData.name,
-            Email: formData.email,
-            Message: formData.message
+            name: formData.name,
+            email: formData.email,
+            message: formData.message
           })
         });
         
         const data = await response.json();
-        if (data.success === "true" || response.ok) {
+        if (data.success === "true" || data.success === true) {
           setSubmitted(true);
           setFormData({ name: '', email: '', message: '' });
           setTimeout(() => setSubmitted(false), 5000);
         } else {
-          setSubmitError("Đã có lỗi xảy ra trong quá trình gửi. Vui lòng thử lại!");
+          // Hiển thị thông điệp lỗi chi tiết từ API (ví dụ: thông báo cần kích hoạt email gửi tới nguytuyen19@gmail.com)
+          setSubmitError(data.message || "Đã có lỗi xảy ra trong quá trình gửi. Vui lòng thử lại!");
         }
       } catch (error) {
         console.error("Form submission error:", error);

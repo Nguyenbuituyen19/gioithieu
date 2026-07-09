@@ -44,7 +44,7 @@ function App() {
         backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat'
       }} 
-      className="min-h-screen text-on-surface relative overflow-x-hidden"
+      className="min-h-screen text-on-surface"
     >
       {/* Background Interactive Mouse Glow */}
       <CursorGlow />
