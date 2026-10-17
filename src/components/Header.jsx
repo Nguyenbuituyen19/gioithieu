@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const cvUrl = `${import.meta.env.BASE_URL}CV.pdf`;
+
   return (
     <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-md border-b border-white/10 shadow-sm">
       <div className="flex justify-between items-center px-gutter max-w-container-max mx-auto h-20">
@@ -25,7 +27,7 @@ export default function Header() {
             Liên Hệ
           </a>
           <a 
-            href="/CV.pdf" 
+            href={cvUrl} 
             target="_blank" 
             rel="noopener noreferrer"
             className="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-bold hover:opacity-90 transition-all duration-300 interactive-btn inline-block text-center"
@@ -77,7 +79,7 @@ export default function Header() {
             Liên Hệ
           </a>
           <a 
-            href="/CV.pdf" 
+            href={cvUrl} 
             target="_blank" 
             rel="noopener noreferrer"
             className="bg-primary-container text-on-primary-container px-6 py-3 rounded-full font-bold hover:opacity-90 transition-all duration-300 w-full text-center mt-2 inline-block"

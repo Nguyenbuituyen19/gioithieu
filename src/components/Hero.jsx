@@ -41,12 +41,21 @@ export default function Hero() {
         
         <Reveal delay={300}>
           <p className="font-body-lg text-body-lg text-on-surface-variant mb-12 max-w-2xl mx-auto">
-            Em là sinh viên ngành Công nghệ Thông tin, định hướng trở thành Frontend Developer. Em luôn chú trọng trải nghiệm người dùng, hiệu năng và khả năng mở rộng của sản phẩm.
+            Mình là sinh viên ngành Công nghệ Thông tin, định hướng trở thành Frontend Developer. Mình luôn chú trọng trải nghiệm người dùng, hiệu năng và khả năng mở rộng của sản phẩm.
           </p>
         </Reveal>
 
         <Reveal delay={450}>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a 
+              href={`${import.meta.env.BASE_URL}CV.pdf`}
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto bg-primary-container text-on-primary-container font-bold px-8 py-4 rounded-lg interactive-btn shadow-lg hover:shadow-primary/30 transition-all duration-300 text-center flex items-center justify-center gap-2"
+            >
+              <span className="material-symbols-outlined text-xl">description</span>
+              Xem CV
+            </a>
             <a 
               href="#work" 
               className="w-full sm:w-auto bg-primary text-on-primary-container font-bold px-8 py-4 rounded-lg interactive-btn shadow-lg hover:shadow-primary/30 transition-all duration-300 text-center"

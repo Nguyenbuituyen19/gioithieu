@@ -13,13 +13,15 @@ export default function Contact() {
       setIsSubmitting(true);
       setSubmitError(null);
       try {
-        const response = await fetch("https://formsubmit.co/ajax/nguytuyen19@gmail.com", {
+        const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || "YOUR_ACCESS_KEY_HERE";
+        const response = await fetch("https://api.web3forms.com/submit", {
           method: "POST",
           headers: { 
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           },
           body: JSON.stringify({
+            access_key: accessKey,
             name: formData.name,
             email: formData.email,
             message: formData.message
@@ -32,7 +34,6 @@ export default function Contact() {
           setFormData({ name: '', email: '', message: '' });
           setTimeout(() => setSubmitted(false), 5000);
         } else {
-          // Hiển thị thông điệp lỗi chi tiết từ API (ví dụ: thông báo cần kích hoạt email gửi tới nguytuyen19@gmail.com)
           setSubmitError(data.message || "Đã có lỗi xảy ra trong quá trình gửi. Vui lòng thử lại!");
         }
       } catch (error) {
@@ -106,7 +107,7 @@ export default function Contact() {
                   <div className="flex gap-4 mt-1">
                     <a href="#" className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono">GitHub</a>
                     <a href="#" className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono">LinkedIn</a>
-                    <a href="https://www.facebook.com/tuyen.nguyen.bui.161740?locale=vi_VN" className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono">Facebook</a>
+                    <a href="https://www.facebook.com/tuyennguyenbui19?locale=vi_VN" className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono">Facebook</a>
                   </div>
                 </div>
               </div>

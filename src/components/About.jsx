@@ -59,13 +59,13 @@ export default function About() {
           
           <Reveal delay={150}>
             <p className="font-body-md text-on-surface-variant mb-6 leading-relaxed">
-              Em là sinh viên ngành Công nghệ Thông tin, định hướng trở thành Frontend Developer. Em có kinh nghiệm xây dựng giao diện web bằng React.js và Next.js thông qua các dự án thực tế, luôn chú trọng trải nghiệm người dùng, hiệu năng và khả năng mở rộng của sản phẩm.
+              Mình là sinh viên ngành Công nghệ Thông tin, định hướng trở thành Frontend Developer. Mình có kinh nghiệm xây dựng giao diện web bằng React.js và Next.js thông qua các dự án thực tế, luôn chú trọng trải nghiệm người dùng, hiệu năng và khả năng mở rộng của sản phẩm.
             </p>
           </Reveal>
           
           <Reveal delay={300}>
             <p className="font-body-md text-on-surface-variant mb-12 leading-relaxed">
-              Hiện em đang phát triển dự án NICE ART từ frontend đến backend với React.js, Next.js, Express.js và Supabase. Em luôn chủ động học hỏi công nghệ mới và mong muốn được làm việc trong môi trường chuyên nghiệp để nâng cao kỹ năng phát triển sản phẩm.
+              Hiện mình đang phát triển dự án NICE ART từ frontend đến backend với React.js, Next.js, Express.js và Supabase. Mình luôn chủ động học hỏi công nghệ mới và mong muốn được làm việc trong môi trường chuyên nghiệp để nâng cao kỹ năng phát triển sản phẩm.
             </p>
           </Reveal>
 
@@ -82,6 +82,23 @@ export default function About() {
                   </div>
                 </div>
               ))}
+            </div>
+          </Reveal>
+
+          {/* Download/View CV CTA */}
+          <Reveal delay={550}>
+            <div className="mt-8">
+              <a 
+                href={`${import.meta.env.BASE_URL}CV.pdf`}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-white/5 border border-white/10 hover:border-primary/50 text-on-surface hover:text-primary font-bold px-6 py-3 rounded-lg transition-all duration-300 interactive-btn group"
+              >
+                <span className="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">
+                  download
+                </span>
+                Tải / Xem CV Đầy Đủ
+              </a>
             </div>
           </Reveal>
         </div>
