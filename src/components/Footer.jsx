@@ -13,7 +13,7 @@ export default function Footer() {
         
         {/* Left Side: Copyright */}
         <div className="font-label-mono text-xs text-on-surface-variant">
-          &copy; {currentYear} TuyenNguyenBui. Mọi quyền được bảo lưu.
+          &copy; {currentYear} Nguyễn Bùi Tuyển. Mọi quyền được bảo lưu.
         </div>
 
         {/* Middle Side: Made with */}

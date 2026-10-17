@@ -73,41 +73,78 @@ export default function Contact() {
           <div className="flex flex-col gap-6">
             <Reveal delay={150}>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary">
+                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary shrink-0">
+                  <span className="material-symbols-outlined">call</span>
+                </div>
+                <div>
+                  <div className="text-xs text-on-surface-variant font-label-mono uppercase">Điện thoại / Zalo</div>
+                  <a href="tel:0814582282" className="text-on-surface hover:text-primary transition-colors font-body-md font-medium">
+                    0814 582 282
+                  </a>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal delay={250}>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary shrink-0">
                   <span className="material-symbols-outlined">mail</span>
                 </div>
                 <div>
                   <div className="text-xs text-on-surface-variant font-label-mono uppercase">Email cá nhân</div>
-                  <a href="mailto:nguytuyen19@gmail.com" className="text-on-surface hover:text-primary transition-colors font-body-md">
+                  <a href="mailto:nguytuyen19@gmail.com" className="text-on-surface hover:text-primary transition-colors font-body-md font-medium">
                     nguytuyen19@gmail.com
                   </a>
                 </div>
               </div>
             </Reveal>
 
-            <Reveal delay={300}>
+            <Reveal delay={350}>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary">
+                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary shrink-0">
                   <span className="material-symbols-outlined">location_on</span>
                 </div>
                 <div>
-                  <div className="text-xs text-on-surface-variant font-label-mono uppercase">Địa điểm</div>
-                  <div className="text-on-surface font-body-md">TP. Hà Nội, Việt Nam</div>
+                  <div className="text-xs text-on-surface-variant font-label-mono uppercase">Địa chỉ</div>
+                  <div className="text-on-surface font-body-md text-sm md:text-base">
+                    Số 94, Phố Bắc Cầu, Phường Bồ Đề, Hà Nội
+                  </div>
                 </div>
               </div>
             </Reveal>
 
             <Reveal delay={450}>
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary">
+                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary shrink-0">
                   <span className="material-symbols-outlined">share</span>
                 </div>
                 <div>
-                  <div className="text-xs text-on-surface-variant font-label-mono uppercase">Liên kết xã hội</div>
-                  <div className="flex gap-4 mt-1">
-                    <a href="#" className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono">GitHub</a>
-                    <a href="#" className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono">LinkedIn</a>
-                    <a href="https://www.facebook.com/tuyennguyenbui19?locale=vi_VN" className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono">Facebook</a>
+                  <div className="text-xs text-on-surface-variant font-label-mono uppercase">Liên kết mạng xã hội</div>
+                  <div className="flex flex-wrap gap-4 mt-1.5">
+                    <a 
+                      href="https://github.com/Nguyenbuituyen19" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono flex items-center gap-1"
+                    >
+                      GitHub ↗
+                    </a>
+                    <a 
+                      href="https://www.facebook.com/tuyennguyenbui19?locale=vi_VN" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono flex items-center gap-1"
+                    >
+                      Facebook ↗
+                    </a>
+                    <a 
+                      href={`${import.meta.env.BASE_URL}CV.pdf`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="text-secondary hover:text-primary transition-colors text-sm font-label-mono font-semibold flex items-center gap-1"
+                    >
+                      Tải CV PDF ↗
+                    </a>
                   </div>
                 </div>
               </div>

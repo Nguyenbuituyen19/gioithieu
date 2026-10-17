@@ -15,13 +15,14 @@ export default function Reveal({ children, className = '', delay = 0 }) {
       { threshold: 0.08 } // Triggers when 8% of the element is visible
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, []);

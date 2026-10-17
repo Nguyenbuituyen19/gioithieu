@@ -4,21 +4,27 @@ import Reveal from './Reveal';
 const SKILL_CATEGORIES = [
   {
     icon: 'code',
-    title: 'Frontend Development',
-    desc: 'Lập trình giao diện web hiện đại, tối ưu SEO, mượt mà và tương thích tốt trên mọi kích thước màn hình.',
-    skills: ['React', 'Next.js', 'JavaScript (ES6+)', 'TypeScript', 'HTML5 & CSS3']
+    title: 'Frontend Engineering',
+    desc: 'Lập trình ứng dụng web hiện đại với React, Next.js và TypeScript; tối ưu hóa hiệu năng, SEO On-page và chuẩn trải nghiệm người dùng.',
+    skills: ['React', 'Next.js', 'TypeScript', 'JavaScript (ES6+)', 'Tailwind CSS', 'HTML5 & CSS3', 'Responsive Design', 'SEO']
   },
   {
-    icon: 'palette',
-    title: 'UI/UX Design & Styling',
-    desc: 'Chuyển đổi các bản thiết kế Figma thành giao diện thực tế với độ chính xác cao và trải nghiệm người dùng tối đa.',
-    skills: ['Tailwind CSS', 'Vanilla CSS', 'Responsive Design', 'Figma to Code', 'CSS Modules']
+    icon: 'database',
+    title: 'Backend & Cloud Services',
+    desc: 'Xây dựng RESTful API backend với Express.js, tích hợp cơ sở dữ liệu PostgreSQL và nền tảng Supabase (Auth, Storage, Database).',
+    skills: ['Node.js', 'Express.js', 'REST API', 'PostgreSQL', 'Supabase', 'Zod', 'Multer']
   },
   {
-    icon: 'construction',
-    title: 'Workflow & Tools',
-    desc: 'Quản lý phiên bản code, tối ưu quy trình xây dựng sản phẩm và tự động hóa quy trình phát triển.',
-    skills: ['Git & GitHub', 'Vite', 'Webpack', 'npm / yarn', 'Chrome DevTools']
+    icon: 'terminal',
+    title: 'Công cụ & Quy trình (Tools)',
+    desc: 'Thành thạo công cụ kiểm soát phiên bản Git/GitHub, chuyển đổi giao diện từ Figma sang code pixel-perfect và triển khai CI/CD.',
+    skills: ['Git & GitHub', 'VS Code', 'Postman', 'Figma to Code', 'Vercel', 'Vite', 'Chrome DevTools']
+  },
+  {
+    icon: 'psychology',
+    title: 'Kỹ Năng Mềm (Soft Skills)',
+    desc: 'Tư duy phản biện giải quyết vấn đề, tinh thần làm việc nhóm cao, giao tiếp hiệu quả và luôn chủ động nghiên cứu công nghệ mới.',
+    skills: ['Problem-solving', 'Teamwork', 'Communication', 'Continuous Learning', 'Time Management']
   }
 ];
 
@@ -81,34 +87,36 @@ export default function Expertise() {
                   <span className="w-3 h-3 rounded-full bg-yellow-500/80"></span>
                   <span className="w-3 h-3 rounded-full bg-green-500/80"></span>
                 </div>
-                <span className="font-label-mono text-xs text-on-surface-variant">developer.js</span>
+                <div className="flex items-center gap-1.5 font-label-mono text-xs text-on-surface-variant">
+                  <span className="material-symbols-outlined text-sm text-secondary">terminal</span>
+                  <span>candidate_profile.ts</span>
+                </div>
                 <div className="w-12"></div>
               </div>
               
               {/* Code editor content */}
-              <div className="p-6 md:p-8 font-label-mono text-sm leading-relaxed overflow-x-auto text-on-surface bg-surface-container-lowest">
+              <div className="p-6 md:p-8 font-label-mono text-xs md:text-sm leading-relaxed overflow-x-auto text-on-surface bg-surface-container-lowest">
                 <pre className="text-on-surface-variant">
                   <code>
-  <span className="text-primary">const</span> developer = &#123;<br />
-  &nbsp;&nbsp;name: <span className="text-secondary">'Frontend Developer'</span>,<br />
-  &nbsp;&nbsp;coreStack: [<span className="text-secondary">'React'</span>, <span className="text-secondary">'Next.js'</span>, <span className="text-secondary">'TailwindCSS'</span>],<br />
-  &nbsp;&nbsp;designSystem: <span className="text-secondary">'Cyber-Minimalist'</span>,<br />
-  &nbsp;&nbsp;philosophy: <span className="text-secondary">'Clean code & Pixel perfect interfaces'</span>,<br />
-  &nbsp;&nbsp;isProblemSolver: <span className="text-primary">true</span>,<br />
-  &nbsp;&nbsp;getSkills: <span className="text-primary">function</span>() &#123;<br />
-  &nbsp;&nbsp;&nbsp;&nbsp;return this.coreStack.map(stack =&gt; `Mastering $&#123;stack&#125;`);<br />
-  &nbsp;&nbsp;&#125;<br />
+  <span className="text-primary">const</span> candidate = &#123;<br />
+  &nbsp;&nbsp;name: <span className="text-secondary">'Nguyễn Bùi Tuyển'</span>,<br />
+  &nbsp;&nbsp;role: <span className="text-secondary">'Intern / Fresher Frontend Developer'</span>,<br />
+  &nbsp;&nbsp;education: &#123;<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;school: <span className="text-secondary">'Đại học Thăng Long'</span>,<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;major: <span className="text-secondary">'Information Technology'</span>,<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;gpa: <span className="text-primary">3.1</span> <span className="text-on-surface-variant/50">// thang 4.0</span><br />
+  &nbsp;&nbsp;&#125;,<br />
+  &nbsp;&nbsp;experience: [<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-secondary">'SGOData (Frontend Intern: CRM, ERP, POS)'</span>,<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-secondary">'TravelViet (Frontend Intern: Hotel Web)'</span>,<br />
+  &nbsp;&nbsp;&nbsp;&nbsp;<span className="text-secondary">'NICE ART (Freelance Fullstack: CMS &amp; Web)'</span><br />
+  &nbsp;&nbsp;],<br />
+  &nbsp;&nbsp;coreStack: [<span className="text-secondary">'React'</span>, <span className="text-secondary">'Next.js'</span>, <span className="text-secondary">'TypeScript'</span>, <span className="text-secondary">'Tailwind'</span>],<br />
+  &nbsp;&nbsp;isReadyToContribute: <span className="text-primary">true</span><br />
   &#125;;<br />
   <br />
   <span className="text-on-surface-variant">// Console Output</span><br />
-  console.log(developer.getSkills());<br />
-  <span className="text-secondary">/*<br />
-  [<br />
-    'Mastering React',<br />
-    'Mastering Next.js',<br />
-    'Mastering TailwindCSS'<br />
-  ]<br />
-  */</span>
+  console.log(<span className="text-secondary">`Candidate: $&#123;candidate.name&#125; - Ready for work!`</span>);
                   </code>
                 </pre>
               </div>
