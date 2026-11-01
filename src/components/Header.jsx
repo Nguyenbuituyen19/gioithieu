@@ -35,7 +35,7 @@ export default function Header() {
             href={cvUrl} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="bg-primary-container text-on-primary-container px-5 py-2 rounded-lg font-bold hover:opacity-90 transition-all duration-300 interactive-btn inline-flex items-center gap-1.5 text-sm"
+            className="bg-primary text-on-primary-container px-5 py-2 rounded-xl font-bold transition-all duration-300 btn-3d inline-flex items-center gap-1.5 text-sm cursor-pointer"
           >
             <span className="material-symbols-outlined text-base">description</span>
             Xem CV

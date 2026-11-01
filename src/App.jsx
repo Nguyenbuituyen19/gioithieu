@@ -1,7 +1,10 @@
-import React, { useEffect } from 'react';
+﻿import React, { useEffect } from 'react';
 import CursorGlow from './components/CursorGlow';
+import Background3D from './components/Background3D';
+import ScrollProgress from './components/ScrollProgress';
 import Header from './components/Header';
 import Hero from './components/Hero';
+import TechMarquee from './components/TechMarquee';
 import Expertise from './components/Expertise';
 import Work from './components/Work';
 import About from './components/About';
@@ -25,27 +28,20 @@ function App() {
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    // Gọi khởi tạo lần đầu
+    window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Đường dẫn ảnh nền động tương thích với cả local và GitHub Pages
-  const bgUrl = `${import.meta.env.BASE_URL}bg-cyber.jpg`;
-
   return (
-    <div 
-      style={{ 
-        backgroundImage: `radial-gradient(circle at center, rgba(19, 19, 20, 0.4) 0%, rgba(19, 19, 20, 0.85) 100%), url('${bgUrl}')`,
-        backgroundAttachment: 'fixed',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center center',
-        backgroundRepeat: 'no-repeat'
-      }} 
-      className="min-h-screen text-on-surface"
-    >
+    <div className="min-h-screen text-on-surface bg-[#131314] relative selection:bg-primary/30 selection:text-white">
+      {/* Dynamic Laser Scroll Progress Bar */}
+      <ScrollProgress />
+
+      {/* Immersive 3D WebGL & Cyber Space Background */}
+      <Background3D />
+
       {/* Background Interactive Mouse Glow */}
       <CursorGlow />
 
@@ -55,6 +51,7 @@ function App() {
       {/* Main Content Layout */}
       <main className="relative z-10">
         <Hero />
+        <TechMarquee />
         <Work />
         <Expertise />
         <About />

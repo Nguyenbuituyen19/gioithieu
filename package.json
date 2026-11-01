@@ -12,8 +12,11 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "opentype.js": "^2.0.0",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "three": "^0.187.0",
+    "troika-three-text": "^0.52.5"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

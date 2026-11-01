@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Reveal from './Reveal';
+import TiltCard from './TiltCard';
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -52,9 +53,9 @@ export default function Contact() {
   return (
     <section id="contact" className="relative min-h-screen flex flex-col justify-center py-section-gap-mobile md:py-section-gap-desktop px-gutter max-w-container-max mx-auto">
       {/* Background glow light leak */}
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[130px] pointer-events-none"></div>
 
-      <div className="flex flex-col lg:flex-row gap-16">
+      <div className="flex flex-col lg:flex-row gap-16 items-center">
         
         {/* Left Side: Contact Info */}
         <div className="w-full lg:w-1/2 flex flex-col justify-center">
@@ -65,20 +66,20 @@ export default function Contact() {
             <h2 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-6 font-bold tracking-tight">
               Cùng Tạo Nên Những Dự Án Tuyệt Vời
             </h2>
-            <p className="font-body-md text-on-surface-variant mb-12 leading-relaxed max-w-lg">
+            <p className="font-body-md text-on-surface-variant mb-10 leading-relaxed max-w-lg">
               Bạn đang tìm kiếm một Frontend Developer chuyên nghiệp, có tư duy thiết kế tốt và khả năng giải quyết vấn đề? Đừng ngần ngại liên hệ với mình để cùng bàn luận về ý tưởng của bạn.
             </p>
           </Reveal>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             <Reveal delay={150}>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary shrink-0">
+              <div className="flex items-center gap-4 p-3 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-primary/30">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-md">
                   <span className="material-symbols-outlined">call</span>
                 </div>
                 <div>
-                  <div className="text-xs text-on-surface-variant font-label-mono uppercase">Điện thoại / Zalo</div>
-                  <a href="tel:0814582282" className="text-on-surface hover:text-primary transition-colors font-body-md font-medium">
+                  <div className="text-[11px] text-on-surface-variant font-label-mono uppercase">Điện thoại / Zalo</div>
+                  <a href="tel:0814582282" className="text-on-surface hover:text-primary transition-colors font-body-md font-medium text-sm md:text-base">
                     0814 582 282
                   </a>
                 </div>
@@ -86,13 +87,13 @@ export default function Contact() {
             </Reveal>
 
             <Reveal delay={250}>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary shrink-0">
+              <div className="flex items-center gap-4 p-3 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-primary/30">
+                <div className="w-12 h-12 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center text-secondary shrink-0 shadow-md">
                   <span className="material-symbols-outlined">mail</span>
                 </div>
                 <div>
-                  <div className="text-xs text-on-surface-variant font-label-mono uppercase">Email cá nhân</div>
-                  <a href="mailto:nguytuyen19@gmail.com" className="text-on-surface hover:text-primary transition-colors font-body-md font-medium">
+                  <div className="text-[11px] text-on-surface-variant font-label-mono uppercase">Email cá nhân</div>
+                  <a href="mailto:nguytuyen19@gmail.com" className="text-on-surface hover:text-secondary transition-colors font-body-md font-medium text-sm md:text-base">
                     nguytuyen19@gmail.com
                   </a>
                 </div>
@@ -100,12 +101,12 @@ export default function Contact() {
             </Reveal>
 
             <Reveal delay={350}>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary shrink-0">
+              <div className="flex items-center gap-4 p-3 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-primary/30">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-md">
                   <span className="material-symbols-outlined">location_on</span>
                 </div>
                 <div>
-                  <div className="text-xs text-on-surface-variant font-label-mono uppercase">Địa chỉ</div>
+                  <div className="text-[11px] text-on-surface-variant font-label-mono uppercase">Địa chỉ</div>
                   <div className="text-on-surface font-body-md text-sm md:text-base">
                     Số 94, Phố Bắc Cầu, Phường Bồ Đề, Hà Nội
                   </div>
@@ -114,18 +115,18 @@ export default function Contact() {
             </Reveal>
 
             <Reveal delay={450}>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary shrink-0">
+              <div className="flex items-center gap-4 p-3 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-primary/30">
+                <div className="w-12 h-12 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center text-secondary shrink-0 shadow-md">
                   <span className="material-symbols-outlined">share</span>
                 </div>
                 <div>
-                  <div className="text-xs text-on-surface-variant font-label-mono uppercase">Liên kết mạng xã hội</div>
+                  <div className="text-[11px] text-on-surface-variant font-label-mono uppercase">Liên kết mạng xã hội</div>
                   <div className="flex flex-wrap gap-4 mt-1.5">
                     <a 
                       href="https://github.com/Nguyenbuituyen19" 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono flex items-center gap-1"
+                      className="text-on-surface hover:text-primary transition-colors text-xs font-label-mono flex items-center gap-1 pill-3d px-2.5 py-1 rounded-md bg-white/5 border border-white/10"
                     >
                       GitHub ↗
                     </a>
@@ -133,7 +134,7 @@ export default function Contact() {
                       href="https://www.facebook.com/tuyennguyenbui19?locale=vi_VN" 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="text-on-surface hover:text-primary transition-colors text-sm font-label-mono flex items-center gap-1"
+                      className="text-on-surface hover:text-primary transition-colors text-xs font-label-mono flex items-center gap-1 pill-3d px-2.5 py-1 rounded-md bg-white/5 border border-white/10"
                     >
                       Facebook ↗
                     </a>
@@ -141,7 +142,7 @@ export default function Contact() {
                       href={`${import.meta.env.BASE_URL}CV.pdf`} 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="text-secondary hover:text-primary transition-colors text-sm font-label-mono font-semibold flex items-center gap-1"
+                      className="text-secondary hover:text-primary transition-colors text-xs font-label-mono font-semibold flex items-center gap-1 pill-3d px-2.5 py-1 rounded-md bg-secondary/10 border border-secondary/20"
                     >
                       Tải CV PDF ↗
                     </a>
@@ -152,28 +153,34 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Right Side: Message Form */}
-        <div className="w-full lg:w-1/2">
+        {/* Right Side: 3D Floating Terminal Form */}
+        <div className="w-full lg:w-1/2 perspective-1000">
           <Reveal delay={200}>
-            <div className="glass-card p-8 md:p-10 rounded-xl">
-              <h3 className="font-headline-md text-xl font-bold text-on-surface mb-6">
-                Gửi Tin Nhắn Cho Mình
+            <TiltCard
+              className="w-full"
+              innerClassName="glass-card p-8 md:p-10 rounded-2xl border border-white/15 shadow-2xl backdrop-blur-xl"
+              maxTilt={7}
+              perspective={900}
+            >
+              <h3 className="font-headline-md text-xl font-bold text-on-surface mb-6 flex items-center gap-2 translate-z-20">
+                <span className="material-symbols-outlined text-secondary">mark_chat_unread</span>
+                Gửi Tin Nhắn Trực Tiếp
               </h3>
 
               {submitted ? (
-                <div className="bg-secondary/10 border border-secondary/20 text-secondary p-6 rounded-lg font-body-md mb-6 animate-fadeIn">
+                <div className="bg-secondary/10 border border-secondary/20 text-secondary p-6 rounded-xl font-body-md mb-6 animate-fadeIn translate-z-20 shadow-lg">
                   Cảm ơn bạn! Tin nhắn của bạn đã được gửi thành công. Mình sẽ liên hệ lại sớm nhất có thể.
                 </div>
               ) : null}
 
               {submitError ? (
-                <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-6 rounded-lg font-body-md mb-6 animate-fadeIn">
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-6 rounded-xl font-body-md mb-6 animate-fadeIn translate-z-20 shadow-lg">
                   {submitError}
                 </div>
               ) : null}
 
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                <div className="relative group">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5 transform-style-3d">
+                <div className="relative group translate-z-10">
                   <input 
                     type="text" 
                     name="name"
@@ -181,11 +188,11 @@ export default function Contact() {
                     onChange={handleChange}
                     required
                     placeholder="Họ và tên của bạn"
-                    className="w-full bg-surface-container-lowest/50 border border-white/10 text-on-surface px-4 py-4 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 placeholder-on-surface-variant/40"
+                    className="w-full bg-surface-container-lowest/80 border border-white/10 text-on-surface px-4 py-3.5 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 placeholder-on-surface-variant/40 text-sm shadow-inner"
                   />
                 </div>
 
-                <div className="relative group">
+                <div className="relative group translate-z-10">
                   <input 
                     type="email" 
                     name="email"
@@ -193,11 +200,11 @@ export default function Contact() {
                     onChange={handleChange}
                     required
                     placeholder="Địa chỉ Email"
-                    className="w-full bg-surface-container-lowest/50 border border-white/10 text-on-surface px-4 py-4 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 placeholder-on-surface-variant/40"
+                    className="w-full bg-surface-container-lowest/80 border border-white/10 text-on-surface px-4 py-3.5 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 placeholder-on-surface-variant/40 text-sm shadow-inner"
                   />
                 </div>
 
-                <div className="relative group">
+                <div className="relative group translate-z-10">
                   <textarea 
                     name="message"
                     value={formData.message}
@@ -205,19 +212,22 @@ export default function Contact() {
                     required
                     rows="4"
                     placeholder="Nội dung lời nhắn..."
-                    className="w-full bg-surface-container-lowest/50 border border-white/10 text-on-surface px-4 py-4 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 placeholder-on-surface-variant/40 resize-none"
+                    className="w-full bg-surface-container-lowest/80 border border-white/10 text-on-surface px-4 py-3.5 rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 placeholder-on-surface-variant/40 resize-none text-sm shadow-inner"
                   ></textarea>
                 </div>
 
-                <button 
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-primary text-on-primary-container font-bold py-4 rounded-lg interactive-btn hover:opacity-90 transition-all duration-300 text-center disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? 'Đang gửi...' : 'Gửi Tin Nhắn'}
-                </button>
+                <div className="translate-z-30 pt-2">
+                  <button 
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full btn-3d bg-primary text-on-primary-container font-bold py-4 rounded-xl text-center disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                  >
+                    <span className="material-symbols-outlined text-lg">send</span>
+                    {isSubmitting ? 'Đang gửi...' : 'Gửi Tin Nhắn'}
+                  </button>
+                </div>
               </form>
-            </div>
+            </TiltCard>
           </Reveal>
         </div>
 

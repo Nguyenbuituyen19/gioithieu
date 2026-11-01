@@ -1,4 +1,4 @@
-@tailwind base;
+﻿@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -70,6 +70,12 @@
     animation: float 6s ease-in-out infinite;
   }
 
+  /* Infinite Marquee keyframes */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
   .interactive-btn {
     transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   }
@@ -86,6 +92,104 @@
 
   .project-card:hover .project-arrow {
     transform: translate(3px, -3px);
+  }
+
+  /* 3D Spatial & Perspective Utilities */
+  .perspective-800 {
+    perspective: 800px;
+  }
+
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .perspective-1500 {
+    perspective: 1500px;
+  }
+
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .translate-z-10 {
+    transform: translateZ(10px);
+  }
+
+  .translate-z-20 {
+    transform: translateZ(20px);
+  }
+
+  .translate-z-30 {
+    transform: translateZ(30px);
+  }
+
+  .translate-z-40 {
+    transform: translateZ(40px);
+  }
+
+  .translate-z-50 {
+    transform: translateZ(50px);
+  }
+
+  /* 3D Tactile Button */
+  .btn-3d {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 8px 20px -4px rgba(193, 193, 255, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  }
+
+  .btn-3d:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 28px -4px rgba(193, 193, 255, 0.45), 0 0 20px rgba(0, 238, 252, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  }
+
+  .btn-3d:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 4px 10px -2px rgba(193, 193, 255, 0.25);
+  }
+
+  /* 3D Floating Glow Pill */
+  .pill-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .pill-3d:hover {
+    transform: translateZ(15px) translateY(-2px);
+    box-shadow: 0 8px 20px -3px rgba(0, 238, 252, 0.25), 0 0 15px rgba(193, 193, 255, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  }
+
+  /* 3D Hero Avatar Card */
+  .avatar-scan {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 8%;
+    height: 14%;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 238, 252, 0.18) 50%, transparent 100%);
+    mix-blend-mode: screen;
+    opacity: 0;
+    animation: avatar-scan 7s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes avatar-scan {
+    0% { transform: translate3d(0, 0, 0); opacity: 0; }
+    12% { opacity: 0.7; }
+    80% { opacity: 0.7; }
+    100% { transform: translate3d(0, 470%, 0); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .avatar-scan {
+      display: none;
+    }
   }
 }
 
@@ -120,5 +224,155 @@
     scroll-snap-align: start;
     scroll-snap-stop: always;
   }
+}
+
+
+/* 3D Real-time Extruded Typography Styles */
+.text-3d-name {
+  color: #ffffff;
+  text-shadow:
+    0 1px 0 #a2a2ff,
+    0 2px 0 #8c8cff,
+    0 3px 0 #7676f8,
+    0 4px 0 #6060f0,
+    0 5px 0 #4a4ae7,
+    0 6px 0 #3535dd,
+    0 7px 0 #2323cc,
+    0 8px 14px rgba(0, 0, 0, 0.8),
+    0 14px 28px rgba(0, 238, 252, 0.45),
+    0 0 45px rgba(193, 193, 255, 0.6);
+  letter-spacing: -0.025em;
+  transform-style: preserve-3d;
+  will-change: transform, text-shadow;
+}
+
+.text-3d-intro {
+  color: #f1f0f2;
+  text-shadow:
+    0 1px 0 #4c4d59,
+    0 2px 0 #3b3c46,
+    0 3px 0 #2a2b34,
+    0 4px 0 #1b1c23,
+    0 6px 12px rgba(0, 0, 0, 0.7);
+  letter-spacing: -0.015em;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.text-3d-word {
+  display: inline-block;
+  transform-style: preserve-3d;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), text-shadow 0.25s ease;
+}
+
+.text-3d-word:hover {
+  transform: translateZ(35px) scale(1.06) rotateX(-6deg);
+  text-shadow:
+    0 2px 0 #c1c1ff,
+    0 4px 0 #9e9eff,
+    0 6px 0 #7d7dff,
+    0 8px 0 #5c5cfa,
+    0 10px 0 #3d3df0,
+    0 15px 30px rgba(0, 238, 252, 0.8),
+    0 0 50px rgba(193, 193, 255, 0.9);
+}
+
+.translate-z-60 { transform: translateZ(60px); }
+.translate-z-70 { transform: translateZ(70px); }
+.translate-z-80 { transform: translateZ(80px); }
+.translate-z-100 { transform: translateZ(100px); }
+
+
+/* Chubby Rounded 3D Typography */
+.font-bubble-3d {
+  font-family: 'Baloo 2', 'Fredoka', cursive, sans-serif !important;
+}
+
+/* 1. Sunset Amber (Vàng Cam 3D Béo) */
+.text-3d-amber {
+  font-family: 'Baloo 2', 'Fredoka', cursive, sans-serif !important;
+  color: #fff6d6;
+  text-shadow:
+    0 1px 0 #ffd000,
+    0 2px 0 #ffba00,
+    0 3px 0 #ffa200,
+    0 4px 0 #ff8a00,
+    0 5px 0 #f07000,
+    0 6px 0 #d95800,
+    0 7px 0 #bd4200,
+    0 8px 0 #a03000,
+    0 9px 0 #852200,
+    0 10px 16px rgba(0, 0, 0, 0.8),
+    0 16px 32px rgba(255, 140, 0, 0.55),
+    0 0 45px rgba(255, 195, 0, 0.6);
+  letter-spacing: 0.01em;
+  transform-style: preserve-3d;
+  will-change: transform, text-shadow;
+}
+
+/* 2. Cyber Mint (Xanh Neon Mint 3D Béo) */
+.text-3d-mint {
+  font-family: 'Baloo 2', 'Fredoka', cursive, sans-serif !important;
+  color: #e3fff5;
+  text-shadow:
+    0 1px 0 #00f5a0,
+    0 2px 0 #00df8f,
+    0 3px 0 #00c77e,
+    0 4px 0 #00ad6c,
+    0 5px 0 #00945b,
+    0 6px 0 #007a4a,
+    0 7px 0 #00633b,
+    0 8px 0 #004d2d,
+    0 10px 16px rgba(0, 0, 0, 0.8),
+    0 16px 32px rgba(0, 245, 160, 0.55),
+    0 0 45px rgba(0, 245, 160, 0.6);
+  letter-spacing: 0.01em;
+  transform-style: preserve-3d;
+  will-change: transform, text-shadow;
+}
+
+/* 3. Electric Coral (H?ng San Hô 3D Béo) */
+.text-3d-coral {
+  font-family: 'Baloo 2', 'Fredoka', cursive, sans-serif !important;
+  color: #fff0f5;
+  text-shadow:
+    0 1px 0 #ff5c8a,
+    0 2px 0 #ff4074,
+    0 3px 0 #f0255d,
+    0 4px 0 #d9144a,
+    0 5px 0 #bd0b3c,
+    0 6px 0 #9e0530,
+    0 7px 0 #820025,
+    0 8px 0 #69001d,
+    0 10px 16px rgba(0, 0, 0, 0.8),
+    0 16px 32px rgba(255, 64, 116, 0.55),
+    0 0 45px rgba(255, 92, 138, 0.6);
+  letter-spacing: 0.01em;
+  transform-style: preserve-3d;
+  will-change: transform, text-shadow;
+}
+
+.text-3d-intro-chubby {
+  font-family: 'Baloo 2', 'Fredoka', cursive, sans-serif !important;
+  color: #ffffff;
+  text-shadow:
+    0 1px 0 #666c80,
+    0 2px 0 #4e5366,
+    0 3px 0 #393e4f,
+    0 4px 0 #272a38,
+    0 5px 10px rgba(0, 0, 0, 0.7);
+  letter-spacing: 0.015em;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.text-3d-word-chubby {
+  display: inline-block;
+  transform-style: preserve-3d;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), text-shadow 0.28s ease;
+}
+
+.text-3d-word-chubby:hover {
+  transform: translateZ(42px) scale(1.12) rotateX(-8deg) rotateY(4deg);
 }
 

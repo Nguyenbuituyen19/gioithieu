@@ -1,5 +1,6 @@
-import React from 'react';
+﻿import React, { useRef, useState, useEffect } from 'react';
 import Reveal from './Reveal';
+import TiltCard from './TiltCard';
 
 const STATS = [
   { value: '3.1/4.0', label: 'GPA ĐH Thăng Long' },
@@ -55,21 +56,53 @@ const TIMELINE = [
   {
     type: 'Hoạt động',
     year: '2024 - 2025',
-    role: 'Thành viên Ban Chuyên môn',
-    company: 'CLB Tin học Thăng Long (ThangLong IT Club)',
+    role: 'Thành viên Ban Chuyên môn / CLB Tin học',
+    company: 'Đại Học Thăng Long',
     bullets: [
-      'Tham gia hỗ trợ tổ chức các workshop công nghệ và sự kiện thi lập trình cho sinh viên.',
-      'Hỗ trợ công tác tổ chức, kết nối và thúc đẩy phong trào học lập trình trong câu lạc bộ.'
+      'Tham gia chia sẻ kiến thức lập trình cơ bản và hỗ trợ các bạn sinh viên khóa dưới.',
+      'Đóng góp xây dựng các workshop mini về React và kỹ năng làm việc nhóm kỹ thuật.'
     ]
   }
 ];
 
 export default function About() {
+  const timelineRef = useRef(null);
+  const [timelineProgress, setTimelineProgress] = useState(0);
+
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!timelineRef.current) return;
+      const rect = timelineRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+
+      // Calculate how far the laser beam has traversed through the timeline
+      const totalHeight = rect.height;
+      const visibleOffset = windowHeight * 0.7 - rect.top;
+      const progress = Math.min(Math.max(visibleOffset / totalHeight, 0), 1);
+      setTimelineProgress(progress);
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <section id="about" className="relative min-h-screen flex flex-col justify-center py-section-gap-mobile md:py-section-gap-desktop px-gutter max-w-container-max mx-auto">
-      <div className="flex flex-col lg:flex-row gap-16">
+      <div className="flex flex-col lg:flex-row gap-16 items-start">
         
-        {/* Left Column: Bio & Stats */}
+        {/* Left Column: Bio & 3D Stats */}
         <div className="w-full lg:w-5/12 flex flex-col justify-center">
           <Reveal>
             <span className="font-label-mono text-label-mono text-primary mb-2 block uppercase tracking-widest">
@@ -85,47 +118,47 @@ export default function About() {
           
           <Reveal delay={150}>
             <p className="font-body-md text-on-surface-variant mb-5 leading-relaxed text-sm md:text-base">
-              Sinh viên năm 3 ngành Công nghệ Thông tin tại <strong className="text-on-surface">Đại học Thăng Long</strong> với niềm đam mê sâu sắc trong việc tạo ra những ứng dụng web hiện đại, giao diện trực quan và trải nghiệm người dùng mượt mà.
+              Sinh viên năm 3 ngành Công nghệ Thông tin tại <strong className="text-on-surface font-semibold text-primary">Đại học Thăng Long</strong> với niềm đam mê sâu sắc trong việc tạo ra những ứng dụng web hiện đại, giao diện trực quan 3D và trải nghiệm người dùng mượt mà.
             </p>
           </Reveal>
           
           <Reveal delay={250}>
             <p className="font-body-md text-on-surface-variant mb-8 leading-relaxed text-sm md:text-base">
-              Hiện tại, mình đang thực tập Frontend tại <strong className="text-on-surface">SGOData</strong> và <strong className="text-on-surface">TravelViet</strong>, tham gia xây dựng hệ sinh thái phần mềm quản lý doanh nghiệp (CRM, ERP, POS) và các nền tảng đặt phòng du lịch. Mình luôn chủ động trau dồi các công nghệ React, Next.js, TypeScript và các phương pháp tối ưu hóa hiệu năng mới nhất.
+              Hiện tại, mình đang thực tập Frontend tại <strong className="text-on-surface font-semibold text-secondary">SGOData</strong> và <strong className="text-on-surface font-semibold text-secondary">TravelViet</strong>, tham gia xây dựng hệ sinh thái phần mềm quản lý doanh nghiệp (CRM, ERP, POS) và các nền tảng đặt phòng du lịch. Mình luôn chủ động trau dồi các công nghệ React, Next.js, TypeScript và các phương pháp tối ưu hóa hiệu năng mới nhất.
             </p>
           </Reveal>
 
-          {/* Personal Key Info */}
+          {/* Personal Key Info Tile */}
           <Reveal delay={350}>
-            <div className="bg-surface-container-lowest/60 border border-white/5 rounded-xl p-5 mb-8 flex flex-col gap-2.5 font-label-mono text-xs">
-              <div className="flex justify-between items-center py-1 border-b border-white/5">
+            <div className="bg-surface-container-lowest/70 border border-white/10 rounded-2xl p-5 mb-8 flex flex-col gap-2.5 font-label-mono text-xs shadow-lg backdrop-blur-md">
+              <div className="flex justify-between items-center py-1.5 border-b border-white/5">
                 <span className="text-on-surface-variant">Ngày sinh:</span>
                 <span className="text-on-surface font-medium">09/05/2006 (Nam)</span>
               </div>
-              <div className="flex justify-between items-center py-1 border-b border-white/5">
+              <div className="flex justify-between items-center py-1.5 border-b border-white/5">
                 <span className="text-on-surface-variant">Trường ĐH:</span>
                 <span className="text-primary font-medium">Đại Học Thăng Long</span>
               </div>
-              <div className="flex justify-between items-center py-1 border-b border-white/5">
+              <div className="flex justify-between items-center py-1.5 border-b border-white/5">
                 <span className="text-on-surface-variant">Điểm GPA:</span>
                 <span className="text-secondary font-semibold">3.1 / 4.0</span>
               </div>
-              <div className="flex justify-between items-center py-1">
+              <div className="flex justify-between items-center py-1.5">
                 <span className="text-on-surface-variant">Khu vực:</span>
                 <span className="text-on-surface font-medium">Hà Nội, Việt Nam</span>
               </div>
             </div>
           </Reveal>
 
-          {/* Stats Blocks */}
+          {/* 3D Floating Stats Blocks */}
           <Reveal delay={450}>
             <div className="grid grid-cols-3 gap-3 border-t border-white/10 pt-6">
               {STATS.map((s, idx) => (
-                <div key={idx} className="text-center md:text-left">
+                <div key={idx} className="glass-card pill-3d p-3.5 rounded-xl text-center border border-white/10">
                   <div className="text-primary font-bold tracking-tight text-2xl md:text-3xl">
                     {s.value}
                   </div>
-                  <div className="font-label-mono text-[10px] md:text-xs text-on-surface-variant mt-1.5 uppercase tracking-wider">
+                  <div className="font-label-mono text-[10px] md:text-xs text-on-surface-variant mt-1 uppercase tracking-wider font-medium">
                     {s.label}
                   </div>
                 </div>
@@ -140,7 +173,7 @@ export default function About() {
                 href={`${import.meta.env.BASE_URL}CV.pdf`}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-primary-container text-on-primary-container font-bold px-6 py-3 rounded-lg transition-all duration-300 interactive-btn shadow-md hover:shadow-primary/30"
+                className="inline-flex items-center gap-2 bg-primary text-on-primary-container font-bold px-6 py-3.5 rounded-xl transition-all duration-300 btn-3d shadow-md"
               >
                 <span className="material-symbols-outlined text-lg">
                   description
@@ -151,7 +184,7 @@ export default function About() {
                 href="https://github.com/Nguyenbuituyen19" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-white/5 border border-white/10 hover:border-primary/50 text-on-surface hover:text-primary font-semibold px-5 py-3 rounded-lg transition-all duration-300"
+                className="inline-flex items-center gap-2 bg-white/5 border border-white/10 hover:border-primary/50 text-on-surface hover:text-primary font-semibold px-5 py-3.5 rounded-xl transition-all duration-300 btn-3d"
               >
                 <span className="material-symbols-outlined text-lg text-primary">
                   code
@@ -162,7 +195,7 @@ export default function About() {
           </Reveal>
         </div>
 
-        {/* Right Column: Experience & Education Timeline */}
+        {/* Right Column: Experience & Education Timeline with Scroll-Driven Laser */}
         <div className="w-full lg:w-7/12">
           <Reveal delay={100}>
             <h3 className="font-headline-md text-xl font-bold text-on-surface mb-8 flex items-center gap-2.5">
@@ -171,43 +204,73 @@ export default function About() {
             </h3>
           </Reveal>
 
-          <div className="relative border-l border-white/10 pl-6 md:pl-8 ml-3 flex flex-col gap-10">
-            {TIMELINE.map((item, idx) => (
-              <Reveal key={idx} delay={idx * 120}>
-                <div className="relative group">
-                  {/* Bullet point on the timeline border */}
-                  <div className="absolute -left-[31px] md:-left-[39px] top-1.5 w-4 h-4 rounded-full bg-primary border-4 border-background group-hover:scale-125 group-hover:bg-secondary transition-all"></div>
-                  
-                  {/* Timeline content */}
-                  <div className="glass-card p-6 rounded-xl border border-white/5 hover:border-primary/20 transition-all">
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                      <span className="font-label-mono text-xs text-secondary bg-secondary/10 px-3 py-0.5 rounded-full font-medium">
-                        {item.year}
-                      </span>
-                      <span className="font-label-mono text-[10px] uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded">
-                        {item.type}
-                      </span>
-                    </div>
+          <div ref={timelineRef} className="relative pl-6 md:pl-8 ml-3 flex flex-col gap-8 perspective-1000">
+            {/* Background static line */}
+            <div className="absolute left-0 top-3 bottom-3 w-[2px] bg-white/10" />
 
-                    <h4 className="font-headline-md text-base md:text-lg font-bold text-on-surface mb-0.5">
-                      {item.role}
-                    </h4>
-                    <div className="font-body-md text-sm text-primary mb-3 font-semibold">
-                      {item.company}
-                    </div>
+            {/* Dynamic Scroll-Filled Laser Beam */}
+            <div 
+              className="absolute left-0 top-3 w-[2px] bg-gradient-to-b from-primary via-secondary to-[#00eefc] shadow-[0_0_12px_#00eefc] transition-all duration-100 ease-out z-0"
+              style={{ height: `${timelineProgress * 100}%` }}
+            >
+              {/* Laser head spark */}
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-secondary blur-[1px] shadow-[0_0_10px_#00eefc]" />
+            </div>
+
+            {TIMELINE.map((item, idx) => {
+              const itemThreshold = (idx + 0.3) / TIMELINE.length;
+              const isPassed = timelineProgress >= itemThreshold;
+
+              return (
+                <Reveal key={idx} delay={idx * 100}>
+                  <div className="relative group">
+                    {/* Glowing Node on the timeline border */}
+                    <div 
+                      className={`absolute -left-[31px] md:-left-[39px] top-4 w-4 h-4 rounded-full border-4 border-background transition-all duration-500 z-10 ${
+                        isPassed 
+                          ? 'bg-secondary scale-125 shadow-[0_0_16px_rgba(0,238,252,0.9)] ring-2 ring-secondary/50' 
+                          : 'bg-primary/40 group-hover:bg-secondary'
+                      }`}
+                    />
                     
-                    <ul className="flex flex-col gap-1.5">
-                      {item.bullets.map((bullet, bIdx) => (
-                        <li key={bIdx} className="font-body-md text-xs md:text-sm text-on-surface-variant leading-relaxed flex items-start gap-2">
-                          <span className="text-secondary shrink-0 mt-0.5 font-bold">•</span>
-                          <span>{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    {/* Timeline 3D Tilt Card */}
+                    <TiltCard
+                      className="w-full"
+                      innerClassName={`glass-card p-6 rounded-2xl border transition-all shadow-lg ${
+                        isPassed ? 'border-secondary/40 shadow-[0_0_20px_rgba(0,238,252,0.08)]' : 'border-white/10 hover:border-primary/30'
+                      }`}
+                      maxTilt={6}
+                      perspective={800}
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-2 translate-z-20">
+                        <span className="font-label-mono text-xs text-secondary bg-secondary/10 border border-secondary/20 px-3 py-0.5 rounded-full font-medium">
+                          {item.year}
+                        </span>
+                        <span className="font-label-mono text-[10px] uppercase tracking-wider text-primary bg-primary/10 border border-primary/20 px-2.5 py-0.5 rounded-md font-semibold">
+                          {item.type}
+                        </span>
+                      </div>
+
+                      <h4 className="font-headline-md text-base md:text-lg font-bold text-on-surface mb-0.5 translate-z-20">
+                        {item.role}
+                      </h4>
+                      <div className="font-body-md text-sm text-primary mb-3 font-semibold translate-z-10">
+                        {item.company}
+                      </div>
+                      
+                      <ul className="flex flex-col gap-1.5 translate-z-10">
+                        {item.bullets.map((bullet, bIdx) => (
+                          <li key={bIdx} className="font-body-md text-xs md:text-sm text-on-surface-variant leading-relaxed flex items-start gap-2">
+                            <span className="text-secondary shrink-0 mt-0.5 font-bold">›</span>
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </TiltCard>
                   </div>
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              );
+            })}
           </div>
         </div>
 
