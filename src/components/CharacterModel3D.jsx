@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
 const getModelUrl = (filename) => {
   const base = import.meta.env.BASE_URL || '/';
@@ -21,6 +22,24 @@ const ANIMATIONS = [
   { label: '🥊 Quyết tâm', act: 'Punch' }
 ];
 
+// Helper to create a soft radial gradient canvas for contact shadows
+function createContactShadowTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 256;
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 120);
+  gradient.addColorStop(0, 'rgba(0, 0, 0, 0.85)');
+  gradient.addColorStop(0.3, 'rgba(0, 0, 0, 0.55)');
+  gradient.addColorStop(0.65, 'rgba(0, 0, 0, 0.18)');
+  gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 256, 256);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;
+}
+
 export default function CharacterModel3D({ className = '' }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -33,6 +52,8 @@ export default function CharacterModel3D({ className = '' }) {
   const controlsRef = useRef(null);
   const currentModelRef = useRef(null);
   const playActionRef = useRef(null);
+  const pointerRef = useRef({ x: 0, y: 0, targetX: 0, targetY: 0 });
+  const baseYRef = useRef(-1.2);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -50,7 +71,7 @@ export default function CharacterModel3D({ className = '' }) {
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, isMobile ? 0.5 : 0.6, isMobile ? 4.1 : 3.7);
+    camera.position.set(0, isMobile ? 0.45 : 0.55, isMobile ? 4.2 : 3.8);
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -60,71 +81,162 @@ export default function CharacterModel3D({ className = '' }) {
     });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.15;
+    renderer.toneMappingExposure = 1.18;
 
-    // 2. OrbitControls with Touch Support
+    // Enable soft shadow mapping
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    // 2. Realistic IBL Environment Map (PBR RoomEnvironment)
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
+    const roomEnv = new RoomEnvironment();
+    const envTexture = pmremGenerator.fromScene(roomEnv, 0.04).texture;
+    scene.environment = envTexture;
+
+    // 3. OrbitControls with smooth damping
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.enablePan = false;
-    controls.target.set(0, 0.1, 0);
+    controls.target.set(0, 0.12, 0);
     controls.minDistance = 1.8;
     controls.maxDistance = 5.5;
-    controls.maxPolarAngle = Math.PI / 2 + 0.15;
+    controls.maxPolarAngle = Math.PI / 2 + 0.12;
     controls.autoRotate = false;
-    controls.autoRotateSpeed = 1.2;
     controls.touches = {
       ONE: THREE.TOUCH.ROTATE,
       TWO: THREE.TOUCH.DOLLY_PAN
     };
     controlsRef.current = controls;
 
-    // 3. Cyber Studio Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
+    // 4. Professional Studio 3-Point Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xdbe6ff, 2.4);
-    keyLight.position.set(3, 4, 3);
+    // Key Light (Warm sunlight with sharp-to-soft shadows)
+    const keyLight = new THREE.DirectionalLight(0xfff6ea, 2.8);
+    keyLight.position.set(3.5, 5, 3.5);
+    keyLight.castShadow = true;
+    keyLight.shadow.mapSize.width = 1024;
+    keyLight.shadow.mapSize.height = 1024;
+    keyLight.shadow.camera.near = 0.5;
+    keyLight.shadow.camera.far = 14;
+    keyLight.shadow.camera.left = -2;
+    keyLight.shadow.camera.right = 2;
+    keyLight.shadow.camera.top = 2;
+    keyLight.shadow.camera.bottom = -2;
+    keyLight.shadow.bias = -0.0004;
+    keyLight.shadow.radius = 2.2;
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(0x00eefc, 2.6);
-    rimLight.position.set(-3, 3, -2);
+    // Fill Light (Cyber Cyan)
+    const fillLight = new THREE.DirectionalLight(0x00eefc, 2.0);
+    fillLight.position.set(-3.5, 3, -1.5);
+    scene.add(fillLight);
+
+    // Rim / Backlight (Electric Violet for silhouette separation)
+    const rimLight = new THREE.DirectionalLight(0xa855f7, 2.2);
+    rimLight.position.set(0, 4, -4);
     scene.add(rimLight);
 
-    const bottomGlow = new THREE.PointLight(0x00eefc, 2.0, 7);
-    bottomGlow.position.set(0, -1.2, 0);
+    // Upward pedestal glow
+    const bottomGlow = new THREE.PointLight(0x00eefc, 2.2, 5);
+    bottomGlow.position.set(0, -1.1, 0);
     scene.add(bottomGlow);
 
-    // 4. Glowing 3D Pedestal
+    // 5. Holographic Cyber Pedestal & Grounding
     const pedestalGroup = new THREE.Group();
-    
-    const ringGeo = new THREE.RingGeometry(1.25, 1.33, 48);
+
+    // Contact Shadow Disc (Directly grounds the robot feet)
+    const contactTexture = createContactShadowTexture();
+    const contactGeo = new THREE.PlaneGeometry(1.9, 1.9);
+    contactGeo.rotateX(-Math.PI / 2);
+    const contactMat = new THREE.MeshBasicMaterial({
+      map: contactTexture,
+      transparent: true,
+      opacity: 0.85,
+      depthWrite: false
+    });
+    const contactMesh = new THREE.Mesh(contactGeo, contactMat);
+    contactMesh.position.y = -1.195;
+    pedestalGroup.add(contactMesh);
+
+    // Directional Shadow Receiver Plane
+    const shadowPlaneGeo = new THREE.PlaneGeometry(3.5, 3.5);
+    shadowPlaneGeo.rotateX(-Math.PI / 2);
+    const shadowPlaneMat = new THREE.ShadowMaterial({ opacity: 0.45 });
+    const shadowMesh = new THREE.Mesh(shadowPlaneGeo, shadowPlaneMat);
+    shadowMesh.position.y = -1.196;
+    shadowMesh.receiveShadow = true;
+    pedestalGroup.add(shadowMesh);
+
+    // Holographic Outer Glowing Ring
+    const ringGeo = new THREE.RingGeometry(1.25, 1.34, 64);
     ringGeo.rotateX(-Math.PI / 2);
     const ringMat = new THREE.MeshBasicMaterial({
       color: 0x00eefc,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.65
+      opacity: 0.75
     });
     const ringMesh = new THREE.Mesh(ringGeo, ringMat);
     ringMesh.position.y = -1.2;
     pedestalGroup.add(ringMesh);
 
-    const discGeo = new THREE.CircleGeometry(1.24, 48);
-    discGeo.rotateX(-Math.PI / 2);
-    const discMat = new THREE.MeshBasicMaterial({
-      color: 0x131314,
+    // Secondary Pulsing Energy Ring
+    const pulseGeo = new THREE.RingGeometry(1.0, 1.05, 48);
+    pulseGeo.rotateX(-Math.PI / 2);
+    const pulseMat = new THREE.MeshBasicMaterial({
+      color: 0xa855f7,
+      side: THREE.DoubleSide,
       transparent: true,
-      opacity: 0.92
+      opacity: 0.5
+    });
+    const pulseMesh = new THREE.Mesh(pulseGeo, pulseMat);
+    pulseMesh.position.y = -1.205;
+    pedestalGroup.add(pulseMesh);
+
+    // Cyber Platform Base Disc
+    const discGeo = new THREE.CircleGeometry(1.24, 64);
+    discGeo.rotateX(-Math.PI / 2);
+    const discMat = new THREE.MeshStandardMaterial({
+      color: 0x111318,
+      metalness: 0.85,
+      roughness: 0.25,
+      transparent: true,
+      opacity: 0.95
     });
     const discMesh = new THREE.Mesh(discGeo, discMat);
     discMesh.position.y = -1.21;
+    discMesh.receiveShadow = true;
     pedestalGroup.add(discMesh);
+
+    // Ambient Cyber Dust Particles
+    const particleCount = 28;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      particlePositions[i * 3] = (Math.random() - 0.5) * 2.2;
+      particlePositions[i * 3 + 1] = -1.2 + Math.random() * 2.2;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 2.2;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMat = new THREE.PointsMaterial({
+      color: 0x00eefc,
+      size: 0.035,
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending
+    });
+    const particlePoints = new THREE.Points(particleGeo, particleMat);
+    pedestalGroup.add(particlePoints);
 
     scene.add(pedestalGroup);
 
-    // 5. Setup DRACO & GLTF Loader
+    // 6. Setup DRACO & GLTF Loader
     const dracoLoader = new DRACOLoader();
     const basePath = import.meta.env.BASE_URL || '/';
     const cleanBase = basePath.endsWith('/') ? basePath : `${basePath}/`;
@@ -134,7 +246,7 @@ export default function CharacterModel3D({ className = '' }) {
     const loader = new GLTFLoader();
     loader.setDRACOLoader(dracoLoader);
 
-    // Load Robot Model
+    // Load Robot Model with PBR enhancements
     const loadRobotModel = () => {
       setIsLoading(true);
       setErrorMessage(null);
@@ -158,6 +270,7 @@ export default function CharacterModel3D({ className = '' }) {
 
           const model = gltf.scene;
 
+          // Normalize size
           const box = new THREE.Box3().setFromObject(model);
           const size = box.getSize(new THREE.Vector3());
           const maxDim = Math.max(size.x, size.y, size.z);
@@ -171,19 +284,34 @@ export default function CharacterModel3D({ className = '' }) {
           const center = scaledBox.getCenter(new THREE.Vector3());
           model.position.x = -center.x;
           model.position.z = -center.z;
-          model.position.y = -scaledBox.min.y - 1.2;
+          const groundedY = -scaledBox.min.y - 1.2;
+          model.position.y = groundedY;
+          baseYRef.current = groundedY;
 
+          // PBR Materials & Emissive Glow Tuning
           model.traverse((child) => {
             if (child.isMesh) {
               child.castShadow = true;
               child.receiveShadow = true;
+              if (child.material) {
+                child.material.envMapIntensity = 1.35;
+                // Boost emissive components (eyes, chest LEDs, status rings)
+                const isEmissive = 
+                  child.name.toLowerCase().includes('eye') ||
+                  child.name.toLowerCase().includes('light') ||
+                  (child.material.emissive && child.material.emissive.getHex() > 0);
+
+                if (isEmissive) {
+                  child.material.emissiveIntensity = 2.6;
+                }
+              }
             }
           });
 
           scene.add(model);
           currentModelRef.current = model;
 
-          // Animations setup
+          // Setup Animations with smooth crossfade
           if (gltf.animations && gltf.animations.length > 0) {
             const mixer = new THREE.AnimationMixer(model);
             mixerRef.current = mixer;
@@ -195,7 +323,7 @@ export default function CharacterModel3D({ className = '' }) {
 
             const defaultClip = actionsRef.current['Wave'] || Object.values(actionsRef.current)[0];
             if (defaultClip) {
-              defaultClip.reset().fadeIn(0.2).play();
+              defaultClip.reset().fadeIn(0.25).play();
               setCurrentAction('Wave');
             }
           }
@@ -218,16 +346,34 @@ export default function CharacterModel3D({ className = '' }) {
       if (!action || !mixerRef.current) return;
 
       Object.values(actionsRef.current).forEach((act) => {
-        if (act !== action) act.fadeOut(0.25);
+        if (act !== action) act.fadeOut(0.28);
       });
 
-      action.reset().fadeIn(0.25).play();
+      action.reset().fadeIn(0.28).play();
       setCurrentAction(actionName);
     };
 
     loadRobotModel();
 
-    // 6. Resize Observer
+    // 7. Interactive Pointer Movement (Head / Body subtle tracking)
+    const handlePointerMove = (e) => {
+      const rect = container.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+      pointerRef.current.targetX = Math.max(-1, Math.min(1, x));
+      pointerRef.current.targetY = Math.max(-1, Math.min(1, y));
+    };
+
+    const handlePointerLeave = () => {
+      pointerRef.current.targetX = 0;
+      pointerRef.current.targetY = 0;
+    };
+
+    container.addEventListener('pointermove', handlePointerMove);
+    container.addEventListener('pointerleave', handlePointerLeave);
+
+    // 8. Resize Observer
     const resizeObserver = new ResizeObserver(() => {
       if (!container || isDestroyed) return;
       const w = container.clientWidth;
@@ -235,14 +381,14 @@ export default function CharacterModel3D({ className = '' }) {
       if (w > 0 && h > 0) {
         const mob = w < 500;
         camera.aspect = w / h;
-        camera.position.set(0, mob ? 0.5 : 0.6, mob ? 4.1 : 3.7);
+        camera.position.set(0, mob ? 0.45 : 0.55, mob ? 4.2 : 3.8);
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
       }
     });
     resizeObserver.observe(container);
 
-    // 7. Pause when offscreen
+    // 9. Pause when offscreen
     const intersectionObserver = new IntersectionObserver(
       ([entry]) => {
         isVisible = entry.isIntersecting;
@@ -251,7 +397,7 @@ export default function CharacterModel3D({ className = '' }) {
     );
     intersectionObserver.observe(container);
 
-    // 8. Render loop
+    // 10. Render loop with micro-breathing & lifelike tracking
     let lastTime = performance.now();
     let animId;
 
@@ -268,7 +414,55 @@ export default function CharacterModel3D({ className = '' }) {
         mixerRef.current.update(delta);
       }
 
-      ringMesh.rotation.z += delta * 0.4;
+      // Smooth pointer lerp
+      pointerRef.current.x = THREE.MathUtils.lerp(
+        pointerRef.current.x,
+        pointerRef.current.targetX,
+        0.06
+      );
+      pointerRef.current.y = THREE.MathUtils.lerp(
+        pointerRef.current.y,
+        pointerRef.current.targetY,
+        0.06
+      );
+
+      // Subtle reactive torso tracking & micro-breathing
+      if (currentModelRef.current) {
+        const targetRotY = pointerRef.current.x * 0.32;
+        const targetRotX = -pointerRef.current.y * 0.12;
+        currentModelRef.current.rotation.y = THREE.MathUtils.lerp(
+          currentModelRef.current.rotation.y,
+          targetRotY,
+          0.05
+        );
+        currentModelRef.current.rotation.x = THREE.MathUtils.lerp(
+          currentModelRef.current.rotation.x,
+          targetRotX,
+          0.05
+        );
+
+        // Organic micro-breathing (subtle vertical rhythm)
+        const breath = Math.sin(now * 0.0022) * 0.012;
+        currentModelRef.current.position.y = baseYRef.current + breath;
+      }
+
+      // Rotate outer cyber ring
+      ringMesh.rotation.z += delta * 0.35;
+
+      // Pulse inner energy ring
+      const pulseScale = 1.0 + Math.sin(now * 0.003) * 0.08;
+      pulseMesh.scale.set(pulseScale, pulseScale, 1);
+      pulseMat.opacity = 0.35 + Math.sin(now * 0.003) * 0.25;
+
+      // Animate ambient cyber particles
+      const posArr = particleGeo.attributes.position.array;
+      for (let i = 0; i < particleCount; i++) {
+        posArr[i * 3 + 1] += delta * 0.18;
+        if (posArr[i * 3 + 1] > 1.2) {
+          posArr[i * 3 + 1] = -1.2;
+        }
+      }
+      particleGeo.attributes.position.needsUpdate = true;
 
       controls.update();
       renderer.render(scene, camera);
@@ -281,6 +475,8 @@ export default function CharacterModel3D({ className = '' }) {
       cancelAnimationFrame(animId);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
+      container.removeEventListener('pointermove', handlePointerMove);
+      container.removeEventListener('pointerleave', handlePointerLeave);
 
       if (currentModelRef.current) {
         scene.remove(currentModelRef.current);
@@ -291,11 +487,24 @@ export default function CharacterModel3D({ className = '' }) {
 
       dracoLoader.dispose();
       controls.dispose();
+      pmremGenerator.dispose();
+      envTexture.dispose();
+      roomEnv.dispose();
+      contactTexture.dispose();
       renderer.dispose();
+
       ringGeo.dispose();
       ringMat.dispose();
+      pulseGeo.dispose();
+      pulseMat.dispose();
       discGeo.dispose();
       discMat.dispose();
+      contactGeo.dispose();
+      contactMat.dispose();
+      shadowPlaneGeo.dispose();
+      shadowPlaneMat.dispose();
+      particleGeo.dispose();
+      particleMat.dispose();
     };
   }, []);
 
@@ -308,18 +517,18 @@ export default function CharacterModel3D({ className = '' }) {
   return (
     <div 
       ref={containerRef} 
-      className={`relative w-full h-[320px] xs:h-[360px] sm:h-[420px] md:h-[480px] lg:h-[520px] flex flex-col items-center justify-center rounded-3xl glass-card border border-white/10 shadow-[0_0_35px_rgba(0,238,252,0.12)] overflow-hidden ${className}`}
+      className={`relative w-full h-[320px] xs:h-[360px] sm:h-[420px] md:h-[480px] lg:h-[520px] flex flex-col items-center justify-center rounded-3xl glass-card border border-white/10 shadow-[0_0_35px_rgba(0,238,252,0.15)] overflow-hidden select-none ${className}`}
     >
       {/* Top HUD Header */}
       <div className="absolute top-2.5 sm:top-3 left-3 sm:left-4 right-3 sm:right-4 z-20 flex items-center justify-between pointer-events-none">
         <div className="flex items-center gap-1.5 sm:gap-2">
           <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_#00eefc]"></span>
           <span className="font-label-mono text-[9px] sm:text-[11px] font-bold text-secondary uppercase tracking-widest">
-            ROBOT TRỢ LÝ 3D • WEBGL
+            ROBOT TRỢ LÝ 3D • PBR WEBGL
           </span>
         </div>
         <div className="font-label-mono text-[9px] sm:text-[10px] text-on-surface-variant/80 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md backdrop-blur-md pointer-events-auto">
-          Kéo xoay 360°
+          Dõi theo chuột • Kéo xoay 360°
         </div>
       </div>
 
@@ -328,7 +537,7 @@ export default function CharacterModel3D({ className = '' }) {
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
           <div className="w-8 h-8 sm:w-10 sm:h-10 border-2 border-secondary/20 border-t-secondary rounded-full animate-spin mb-2 sm:mb-3"></div>
           <span className="font-label-mono text-[10px] sm:text-xs text-secondary tracking-wider">
-            ĐANG TẢI ROBOT 3D...
+            ĐANG TẢI ROBOT 3D (PBR)...
           </span>
         </div>
       )}
