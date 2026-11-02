@@ -78,7 +78,7 @@ export default function CharacterModel3D({ className = '' }) {
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, isMobile ? 0.6 : 0.8, isMobile ? 4.2 : 3.8);
+    camera.position.set(0, isMobile ? 0.45 : 0.55, isMobile ? 4.1 : 3.6);
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -89,13 +89,14 @@ export default function CharacterModel3D({ className = '' }) {
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.3;
+    renderer.toneMappingExposure = 1.1;
 
     // 2. OrbitControls with Touch Support
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.enablePan = false;
+    controls.target.set(0, 0.15, 0);
     controls.minDistance = 1.8;
     controls.maxDistance = 6.0;
     controls.maxPolarAngle = Math.PI / 2 + 0.15;
@@ -108,18 +109,18 @@ export default function CharacterModel3D({ className = '' }) {
     controlsRef.current = controls;
 
     // 3. Cyber Studio Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xc1c1ff, 2.5);
+    const keyLight = new THREE.DirectionalLight(0xdde5ff, 2.0);
     keyLight.position.set(3, 4, 3);
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(0x00eefc, 2.8);
+    const rimLight = new THREE.DirectionalLight(0x00eefc, 2.2);
     rimLight.position.set(-3, 3, -2);
     scene.add(rimLight);
 
-    const bottomGlow = new THREE.PointLight(0x00eefc, 2.0, 7);
+    const bottomGlow = new THREE.PointLight(0x00eefc, 1.8, 7);
     bottomGlow.position.set(0, -1.2, 0);
     scene.add(bottomGlow);
 
@@ -313,7 +314,7 @@ export default function CharacterModel3D({ className = '' }) {
       if (w > 0 && h > 0) {
         const mob = w < 500;
         camera.aspect = w / h;
-        camera.position.set(0, mob ? 0.6 : 0.8, mob ? 4.2 : 3.8);
+        camera.position.set(0, mob ? 0.45 : 0.55, mob ? 4.1 : 3.6);
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
       }
