@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 import TechBadge from './TechBadge';
 
 const MARQUEE_TECHS = [
@@ -22,11 +22,6 @@ const MARQUEE_TECHS = [
   'Vercel'
 ];
 
-/**
- * TechMarquee: Scroll-Velocity Responsive 3D Tech Ticker
- * Seamlessly loops authentic official tech badges and dynamically accelerates
- * with subtle 3D skew when the user scrolls the page.
- */
 export default function TechMarquee() {
   const containerRef = useRef(null);
   const offsetRef = useRef(0);
@@ -41,9 +36,8 @@ export default function TechMarquee() {
       const delta = currentScrollY - lastScrollY;
       lastScrollY = currentScrollY;
 
-      // Boost velocity in response to user scroll flick
-      velocityRef.current += delta * 0.06;
-      velocityRef.current = Math.max(-12, Math.min(12, velocityRef.current));
+      velocityRef.current += delta * 0.05;
+      velocityRef.current = Math.max(-10, Math.min(10, velocityRef.current));
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -51,8 +45,7 @@ export default function TechMarquee() {
     let rafId;
     const animate = () => {
       if (!isHoveredRef.current) {
-        // Smoothly decay velocity back to base cruising speed (0.9px / frame)
-        velocityRef.current += (0.9 - velocityRef.current) * 0.05;
+        velocityRef.current += (0.85 - velocityRef.current) * 0.05;
         offsetRef.current += velocityRef.current;
 
         if (containerRef.current) {
@@ -61,8 +54,7 @@ export default function TechMarquee() {
             if (offsetRef.current >= halfWidth) offsetRef.current -= halfWidth;
             if (offsetRef.current < 0) offsetRef.current += halfWidth;
             
-            // Dynamic skew tilt based on velocity
-            const skewX = Math.max(-6, Math.min(6, (velocityRef.current - 0.9) * 0.6));
+            const skewX = Math.max(-5, Math.min(5, (velocityRef.current - 0.85) * 0.5));
             containerRef.current.style.transform = `translate3d(-${offsetRef.current}px, 0, 0) skewX(${skewX}deg)`;
           }
         }
@@ -80,25 +72,24 @@ export default function TechMarquee() {
 
   return (
     <div 
-      className="relative w-full overflow-hidden py-8 border-y border-white/10 bg-surface-container-lowest/60 backdrop-blur-xl z-20"
+      className="relative w-full overflow-hidden py-4 sm:py-7 border-y border-white/10 bg-surface-container-lowest/60 backdrop-blur-xl z-20"
       onMouseEnter={() => { isHoveredRef.current = true; }}
       onMouseLeave={() => { isHoveredRef.current = false; }}
     >
-      {/* Gradient masks for smooth edges */}
-      <div className="absolute left-0 top-0 bottom-0 w-28 bg-gradient-to-r from-[#131314] to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 bottom-0 w-28 bg-gradient-to-l from-[#131314] to-transparent z-10 pointer-events-none" />
+      {/* Responsive edge masks */}
+      <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-24 bg-gradient-to-r from-[#131314] to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-24 bg-gradient-to-l from-[#131314] to-transparent z-10 pointer-events-none" />
 
       <div 
         ref={containerRef}
-        className="flex w-max gap-6 will-change-transform select-none"
+        className="flex w-max gap-3 sm:gap-6 will-change-transform select-none items-center"
       >
-        {/* Render twice for continuous loop */}
         {[...MARQUEE_TECHS, ...MARQUEE_TECHS].map((tech, idx) => (
           <TechBadge
             key={idx}
             name={tech}
             size="md"
-            className="hover:scale-110 shadow-lg cursor-pointer transition-transform"
+            className="hover:scale-105 shadow-md cursor-pointer transition-transform"
           />
         ))}
       </div>

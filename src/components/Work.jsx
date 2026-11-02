@@ -70,39 +70,40 @@ const PROJECTS = [
 
 export default function Work() {
   return (
-    <section id="work" className="relative min-h-screen flex flex-col justify-center py-section-gap-mobile md:py-section-gap-desktop px-gutter max-w-container-max mx-auto">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-secondary/5 blur-[150px] pointer-events-none"></div>
+    <section id="work" className="relative min-h-screen flex flex-col justify-center py-16 md:py-section-gap-desktop px-4 sm:px-gutter max-w-container-max mx-auto">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] rounded-full bg-secondary/5 blur-[120px] pointer-events-none"></div>
 
-      <div className="mb-12 md:mb-16">
+      <div className="mb-10 sm:mb-14">
         <Reveal>
-          <span className="font-label-mono text-label-mono text-primary mb-2 block uppercase tracking-widest">
+          <span className="font-label-mono text-label-mono text-primary mb-2 block uppercase tracking-widest text-xs sm:text-sm">
             Sản phẩm &amp; Kinh nghiệm thực chiến
           </span>
-          <h2 className="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface font-bold tracking-tight">
+          <h2 className="font-headline-lg-mobile md:font-headline-lg text-2xl sm:text-3xl md:text-4xl text-on-surface font-bold tracking-tight">
             Các Dự Án Đã Phát Triển
           </h2>
-          <p className="font-body-md text-on-surface-variant mt-2 max-w-2xl">
+          <p className="font-body-md text-on-surface-variant mt-2 max-w-2xl text-xs sm:text-sm md:text-base leading-relaxed">
             Các sản phẩm web thực tế đã được triển khai phục vụ người dùng và doanh nghiệp, từ website du lịch nghỉ dưỡng song ngữ đến hệ thống quản trị CMS &amp; ERP/CRM.
           </p>
         </Reveal>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 perspective-1000">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 perspective-1000">
         {PROJECTS.map((proj, idx) => (
           <Reveal key={idx} delay={idx * 120} className="h-full">
             <TiltCard 
               className="h-full"
-              innerClassName="project-card glass-card rounded-xl overflow-hidden flex flex-col h-full border border-white/10 group shadow-xl"
+              innerClassName="project-card glass-card rounded-2xl overflow-hidden flex flex-col h-full border border-white/10 group shadow-xl"
               maxTilt={8}
               perspective={1000}
             >
-              {/* Container Ảnh Dự Án với Chiều Sâu 3D */}
-              <div className="h-56 relative overflow-hidden border-b border-white/10 group flex items-center justify-center bg-surface-container-lowest translate-z-10">
+              {/* Image Container */}
+              <div className="h-44 sm:h-56 relative overflow-hidden border-b border-white/10 group flex items-center justify-center bg-surface-container-lowest translate-z-10">
                 {proj.image ? (
                   <img 
                     src={`${import.meta.env.BASE_URL}${proj.image.replace(/^\//, '')}`} 
                     alt={proj.title}
                     className="w-full h-full object-cover project-image transition-all duration-500 group-hover:scale-105"
+                    loading="lazy"
                     onError={(e) => {
                       e.target.style.display = 'none';
                       const fallback = e.target.nextSibling;
@@ -111,21 +112,19 @@ export default function Work() {
                   />
                 ) : null}
                 
-                {/* Lớp nền gradient dự phòng */}
                 <div 
                   className={`w-full h-full bg-gradient-to-br ${proj.bgGradient} flex items-center justify-center absolute inset-0`}
                   style={{ display: proj.image ? 'none' : 'flex' }}
                 >
                   <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:16px_16px]"></div>
-                  <div className="w-20 h-20 rounded-full border border-white/10 flex items-center justify-center text-white/20 font-label-mono text-sm tracking-wider">
+                  <div className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center text-white/20 font-label-mono text-sm tracking-wider">
                     &lt;/&gt;
                   </div>
                 </div>
 
-                {/* Badge Featured nổi 3D cao hơn */}
                 {proj.featured && (
-                  <div className="absolute top-4 right-4 z-20 translate-z-30">
-                    <span className="font-label-mono text-[11px] font-semibold text-secondary bg-surface/90 border border-secondary/40 backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg pill-3d">
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 translate-z-30">
+                    <span className="font-label-mono text-[10px] sm:text-[11px] font-semibold text-secondary bg-surface/90 border border-secondary/40 backdrop-blur-md px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full flex items-center gap-1.5 shadow-lg pill-3d">
                       <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
                       Production Live
                     </span>
@@ -133,54 +132,48 @@ export default function Work() {
                 )}
               </div>
 
-              {/* Content info với các tầng translateZ */}
-              <div className="p-6 md:p-8 flex flex-col flex-grow transform-style-3d">
-                {/* Period & Role */}
-                <div className="flex flex-wrap items-center justify-between gap-2 mb-3 translate-z-20">
-                  <span className="font-label-mono text-xs text-secondary font-medium">
+              {/* Content info */}
+              <div className="p-5 sm:p-7 md:p-8 flex flex-col flex-grow transform-style-3d">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5 translate-z-20">
+                  <span className="font-label-mono text-[11px] sm:text-xs text-secondary font-medium">
                     {proj.role}
                   </span>
-                  <span className="font-label-mono text-[11px] text-on-surface-variant bg-white/5 border border-white/10 px-2.5 py-0.5 rounded">
+                  <span className="font-label-mono text-[10px] sm:text-[11px] text-on-surface-variant bg-white/5 border border-white/10 px-2 py-0.5 rounded">
                     {proj.period}
                   </span>
                 </div>
 
-                {/* Title */}
-                <h3 className="font-headline-md text-xl font-bold text-on-surface mb-3 group-hover:text-primary transition-colors translate-z-20">
+                <h3 className="font-headline-md text-lg sm:text-xl font-bold text-on-surface mb-2.5 group-hover:text-primary transition-colors translate-z-20">
                   {proj.title}
                 </h3>
                 
-                {/* Description */}
-                <p className="font-body-md text-on-surface-variant mb-4 text-sm leading-relaxed translate-z-10">
+                <p className="font-body-md text-on-surface-variant mb-4 text-xs sm:text-sm leading-relaxed translate-z-10">
                   {proj.desc}
                 </p>
 
-                {/* Bullet highlights */}
                 {proj.highlights && (
-                  <ul className="mb-6 flex flex-col gap-1.5 text-xs text-on-surface-variant/90 border-l border-primary/20 pl-3 translate-z-10">
+                  <ul className="mb-5 flex flex-col gap-1.5 text-xs text-on-surface-variant/90 border-l border-primary/20 pl-3 translate-z-10">
                     {proj.highlights.map((h, hIdx) => (
                       <li key={hIdx} className="flex items-start gap-1.5">
-                        <span className="text-primary mt-0.5 font-bold">›</span>
+                        <span className="text-primary mt-0.5 font-bold shrink-0">›</span>
                         <span>{h}</span>
                       </li>
                     ))}
                   </ul>
                 )}
 
-                {/* Tags lơ lửng 3D với Logo công nghệ */}
-                <div className="flex flex-wrap gap-1.5 mb-6 mt-auto translate-z-30">
+                <div className="flex flex-wrap gap-1.5 mb-5 mt-auto translate-z-30">
                   {proj.tech.map((t, tIdx) => (
                     <TechBadge key={tIdx} name={t} size="sm" />
                   ))}
                 </div>
 
-                {/* Actions Button nổi ở tầng cao nhất */}
-                <div className="pt-4 border-t border-white/5 flex justify-between items-center translate-z-40">
+                <div className="pt-3.5 border-t border-white/5 flex justify-between items-center translate-z-40">
                   <a 
                     href={proj.link}
                     target="_blank"
                     rel="noopener noreferrer" 
-                    className="font-label-mono text-xs text-secondary hover:text-primary flex items-center gap-1.5 group/btn font-semibold pill-3d px-3 py-1.5 rounded-lg bg-secondary/10 border border-secondary/20 transition-all"
+                    className="font-label-mono text-xs text-secondary hover:text-primary flex items-center gap-1.5 group/btn font-semibold pill-3d px-3 py-1.5 rounded-lg bg-secondary/10 border border-secondary/20 transition-all cursor-pointer"
                   >
                     Xem sản phẩm 
                     <span className="material-symbols-outlined text-sm project-arrow transition-transform duration-300">
@@ -188,11 +181,11 @@ export default function Work() {
                     </span>
                   </a>
                   {proj.link.includes('github') ? (
-                    <span className="font-label-mono text-[11px] text-on-surface-variant/70">
+                    <span className="font-label-mono text-[10px] sm:text-[11px] text-on-surface-variant/70">
                       Mã nguồn GitHub
                     </span>
                   ) : (
-                    <span className="font-label-mono text-[11px] text-on-surface-variant/70">
+                    <span className="font-label-mono text-[10px] sm:text-[11px] text-on-surface-variant/70">
                       Trang trực tiếp
                     </span>
                   )}

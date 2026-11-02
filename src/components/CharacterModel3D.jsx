@@ -1,8 +1,10 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { createChibiBoyCharacter } from './ChibiBoyModel';
 
 const getModelUrl = (filename) => {
   const base = import.meta.env.BASE_URL || '/';
@@ -11,6 +13,13 @@ const getModelUrl = (filename) => {
 };
 
 const MODELS = [
+  {
+    id: 'chibi',
+    name: 'Chibi Dev 3D (Chuẩn mẫu)',
+    isChibi: true,
+    hasAnimations: true,
+    defaultAction: 'code'
+  },
   {
     id: 'robot',
     name: 'Robot Trợ Lý 3D',
@@ -38,8 +47,9 @@ const MODELS = [
 export default function CharacterModel3D({ className = '' }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
-  const [activeModelId, setActiveModelId] = useState('robot');
-  const [currentAction, setCurrentAction] = useState('Wave');
+  const [activeModelId, setActiveModelId] = useState('chibi');
+  const [currentAction, setCurrentAction] = useState('code');
+  const [glassesOn, setGlassesOn] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -47,8 +57,10 @@ export default function CharacterModel3D({ className = '' }) {
   const actionsRef = useRef({});
   const controlsRef = useRef(null);
   const currentModelRef = useRef(null);
+  const chibiRef = useRef(null);
   const switchModelRef = useRef(null);
   const playActionRef = useRef(null);
+  const pointerRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -58,14 +70,15 @@ export default function CharacterModel3D({ className = '' }) {
     let isDestroyed = false;
     let isVisible = true;
 
-    // 1. Scene, Camera, Renderer
-    const width = container.clientWidth || 400;
-    const height = container.clientHeight || 450;
+    // 1. Responsive Dimensions
+    const width = container.clientWidth || 360;
+    const height = container.clientHeight || 360;
+    const isMobile = width < 500;
 
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    camera.position.set(0, 0.8, 3.8);
+    camera.position.set(0, isMobile ? 0.6 : 0.8, isMobile ? 4.2 : 3.8);
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -78,7 +91,7 @@ export default function CharacterModel3D({ className = '' }) {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.3;
 
-    // 2. OrbitControls
+    // 2. OrbitControls with Touch Support
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -88,6 +101,10 @@ export default function CharacterModel3D({ className = '' }) {
     controls.maxPolarAngle = Math.PI / 2 + 0.15;
     controls.autoRotate = false;
     controls.autoRotateSpeed = 1.2;
+    controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_PAN
+    };
     controlsRef.current = controls;
 
     // 3. Cyber Studio Lighting
@@ -106,10 +123,9 @@ export default function CharacterModel3D({ className = '' }) {
     bottomGlow.position.set(0, -1.2, 0);
     scene.add(bottomGlow);
 
-    // 4. Glowing 3D Pedestal Platform
+    // 4. Glowing 3D Pedestal
     const pedestalGroup = new THREE.Group();
     
-    // Outer cyber ring
     const ringGeo = new THREE.RingGeometry(1.25, 1.33, 48);
     ringGeo.rotateX(-Math.PI / 2);
     const ringMat = new THREE.MeshBasicMaterial({
@@ -122,7 +138,6 @@ export default function CharacterModel3D({ className = '' }) {
     ringMesh.position.y = -1.2;
     pedestalGroup.add(ringMesh);
 
-    // Inner disc
     const discGeo = new THREE.CircleGeometry(1.24, 48);
     discGeo.rotateX(-Math.PI / 2);
     const discMat = new THREE.MeshBasicMaterial({
@@ -146,22 +161,50 @@ export default function CharacterModel3D({ className = '' }) {
     const loader = new GLTFLoader();
     loader.setDRACOLoader(dracoLoader);
 
-    const loadAndDisplayModel = (modelConfig) => {
-      setIsLoading(true);
-      setErrorMessage(null);
-
-      // Clean up previous model
+    // Clean up current model
+    const cleanupCurrentModel = () => {
       if (currentModelRef.current) {
         scene.remove(currentModelRef.current);
         currentModelRef.current = null;
       }
-
+      if (chibiRef.current) {
+        chibiRef.current.dispose();
+        chibiRef.current = null;
+      }
       if (mixerRef.current) {
         mixerRef.current.stopAllAction();
         mixerRef.current = null;
       }
       actionsRef.current = {};
+    };
 
+    const loadAndDisplayModel = (modelConfig) => {
+      setIsLoading(true);
+      setErrorMessage(null);
+      cleanupCurrentModel();
+
+      // CASE A: Chibi Boy 3D Character (Procedural WebGL Model matching user reference)
+      if (modelConfig.isChibi) {
+        try {
+          const chibi = createChibiBoyCharacter();
+          chibiRef.current = chibi;
+          scene.add(chibi.root);
+          currentModelRef.current = chibi.root;
+
+          chibi.setAction('code');
+          setCurrentAction('code');
+          setGlassesOn(chibi.getGlassesVisible());
+          setIsLoading(false);
+          return;
+        } catch (err) {
+          console.error('Failed to create Chibi Boy 3D character:', err);
+          setIsLoading(false);
+          setErrorMessage('Không thể tạo mô hình 3D Chibi Boy.');
+          return;
+        }
+      }
+
+      // CASE B: GLB Models via GLTFLoader
       const url = getModelUrl(modelConfig.filename);
 
       loader.load(
@@ -169,10 +212,8 @@ export default function CharacterModel3D({ className = '' }) {
         (gltf) => {
           if (isDestroyed) return;
 
-          // DO NOT CLONE: use gltf.scene directly to prevent breaking SkinnedMesh & skeleton bindings!
           const model = gltf.scene;
 
-          // Compute bounding box to automatically normalize scale & position
           const box = new THREE.Box3().setFromObject(model);
           const size = box.getSize(new THREE.Vector3());
           const maxDim = Math.max(size.x, size.y, size.z);
@@ -182,14 +223,12 @@ export default function CharacterModel3D({ className = '' }) {
             model.scale.setScalar(scaleFactor);
           }
 
-          // Recompute after scaling to center horizontally and sit on pedestal
           const scaledBox = new THREE.Box3().setFromObject(model);
           const center = scaledBox.getCenter(new THREE.Vector3());
           model.position.x = -center.x;
           model.position.z = -center.z;
-          model.position.y = -scaledBox.min.y - 1.2; // Top of pedestal is at y = -1.2
+          model.position.y = -scaledBox.min.y - 1.2;
 
-          // Material enhancement
           model.traverse((child) => {
             if (child.isMesh) {
               child.castShadow = true;
@@ -200,7 +239,6 @@ export default function CharacterModel3D({ className = '' }) {
           scene.add(model);
           currentModelRef.current = model;
 
-          // Animations
           if (gltf.animations && gltf.animations.length > 0) {
             const mixer = new THREE.AnimationMixer(model);
             mixerRef.current = mixer;
@@ -238,6 +276,12 @@ export default function CharacterModel3D({ className = '' }) {
     };
 
     playActionRef.current = (actionName) => {
+      if (chibiRef.current) {
+        chibiRef.current.setAction(actionName);
+        setCurrentAction(actionName);
+        return;
+      }
+
       const action = actionsRef.current[actionName];
       if (!action || !mixerRef.current) return;
 
@@ -249,9 +293,17 @@ export default function CharacterModel3D({ className = '' }) {
       setCurrentAction(actionName);
     };
 
-    // Load initial model
+    // Load initial model (Chibi Boy 3D)
     const initialConfig = MODELS.find((m) => m.id === activeModelId) || MODELS[0];
     loadAndDisplayModel(initialConfig);
+
+    // Pointer move listener for head & eye tracking
+    const handlePointerMove = (e) => {
+      const rect = container.getBoundingClientRect();
+      pointerRef.current.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointerRef.current.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+    };
+    container.addEventListener('pointermove', handlePointerMove);
 
     // 6. Resize Observer
     const resizeObserver = new ResizeObserver(() => {
@@ -259,7 +311,9 @@ export default function CharacterModel3D({ className = '' }) {
       const w = container.clientWidth;
       const h = container.clientHeight;
       if (w > 0 && h > 0) {
+        const mob = w < 500;
         camera.aspect = w / h;
+        camera.position.set(0, mob ? 0.6 : 0.8, mob ? 4.2 : 3.8);
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
       }
@@ -288,17 +342,23 @@ export default function CharacterModel3D({ className = '' }) {
       const delta = (now - lastTime) * 0.001;
       lastTime = now;
 
+      // Update Chibi Boy procedural animations & tracking
+      if (chibiRef.current) {
+        chibiRef.current.update(delta, now * 0.001, pointerRef.current);
+      }
+
+      // Update GLB Skeletal animations
       if (mixerRef.current) {
         mixerRef.current.update(delta);
       }
 
-      // Rotate React model or subtle idle floating
+      // React core rotation
       if (currentModelRef.current && activeModelId === 'react') {
         currentModelRef.current.rotation.y += delta * 1.2;
         currentModelRef.current.rotation.x = Math.sin(now * 0.002) * 0.2;
       }
 
-      // Pedestal ring rotation
+      // Pedestal neon ring rotation
       ringMesh.rotation.z += delta * 0.4;
 
       controls.update();
@@ -310,9 +370,11 @@ export default function CharacterModel3D({ className = '' }) {
     return () => {
       isDestroyed = true;
       cancelAnimationFrame(animId);
+      container.removeEventListener('pointermove', handlePointerMove);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
 
+      cleanupCurrentModel();
       dracoLoader.dispose();
       controls.dispose();
       renderer.dispose();
@@ -336,33 +398,74 @@ export default function CharacterModel3D({ className = '' }) {
     }
   };
 
+  const handleToggleGlasses = () => {
+    if (chibiRef.current) {
+      const visible = chibiRef.current.toggleGlasses();
+      setGlassesOn(visible);
+    }
+  };
+
+  const handleExportGLB = () => {
+    if (!currentModelRef.current) return;
+    try {
+      const exporter = new GLTFExporter();
+      exporter.parse(
+        currentModelRef.current,
+        (gltf) => {
+          const blob = new Blob([gltf], { type: 'model/gltf-binary' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${activeModelId}-character.glb`;
+          link.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        },
+        (err) => console.error('Export GLB error:', err),
+        { binary: true }
+      );
+    } catch (e) {
+      console.error('Export GLB error:', e);
+    }
+  };
+
+  const isChibi = activeModelId === 'chibi';
   const isRobot = activeModelId === 'robot';
 
   return (
     <div 
       ref={containerRef} 
-      className={`relative w-full h-[460px] sm:h-[500px] md:h-[540px] flex flex-col items-center justify-center rounded-3xl glass-card border border-white/10 shadow-[0_0_35px_rgba(0,238,252,0.12)] overflow-hidden ${className}`}
+      className={`relative w-full h-[320px] xs:h-[360px] sm:h-[420px] md:h-[480px] lg:h-[520px] flex flex-col items-center justify-center rounded-3xl glass-card border border-white/10 shadow-[0_0_35px_rgba(0,238,252,0.12)] overflow-hidden ${className}`}
     >
       {/* Top HUD Header */}
-      <div className="absolute top-3 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
-        <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_#00eefc]"></span>
-          <span className="font-label-mono text-[11px] font-bold text-secondary uppercase tracking-widest">
-            MÔ HÌNH 3D WEBGL THỰC
+      <div className="absolute top-2.5 sm:top-3 left-3 sm:left-4 right-3 sm:right-4 z-20 flex items-center justify-between pointer-events-none">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_#00eefc]"></span>
+          <span className="font-label-mono text-[9px] sm:text-[11px] font-bold text-secondary uppercase tracking-widest">
+            MÔ HÌNH 3D WEBGL
           </span>
         </div>
-        <div className="font-label-mono text-[10px] text-on-surface-variant/80 bg-white/5 border border-white/10 px-2.5 py-0.5 rounded-md backdrop-blur-md">
-          Chuột kéo xoay 360°
+        <div className="flex items-center gap-1.5 pointer-events-auto">
+          <button
+            onClick={handleExportGLB}
+            title="Tải mô hình 3D .GLB về máy"
+            className="font-label-mono text-[9px] sm:text-[10px] text-secondary hover:text-white bg-secondary/10 hover:bg-secondary/20 border border-secondary/30 px-2 py-0.5 rounded-md backdrop-blur-md transition-all cursor-pointer flex items-center gap-1"
+          >
+            <span className="material-symbols-outlined text-[11px] sm:text-[12px]">download</span>
+            <span>Xuất .GLB</span>
+          </button>
+          <div className="font-label-mono text-[9px] sm:text-[10px] text-on-surface-variant/80 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md backdrop-blur-md">
+            Kéo xoay 360°
+          </div>
         </div>
       </div>
 
       {/* Model Selector Tabs */}
-      <div className="absolute top-11 z-20 flex gap-1.5 p-1 rounded-xl bg-surface-container-lowest/80 border border-white/10 backdrop-blur-md">
+      <div className="absolute top-9 sm:top-11 z-20 flex gap-1 sm:gap-1.5 p-0.5 sm:p-1 rounded-xl bg-surface-container-lowest/80 border border-white/10 backdrop-blur-md max-w-[95%] overflow-x-auto">
         {MODELS.map((m) => (
           <button
             key={m.id}
             onClick={() => handleModelChange(m.id)}
-            className={`font-label-mono text-xs px-3 py-1 rounded-lg transition-all cursor-pointer ${
+            className={`font-label-mono text-[10px] sm:text-xs px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
               activeModelId === m.id
                 ? 'bg-secondary/20 text-secondary border border-secondary/40 font-bold shadow-[0_0_12px_rgba(0,238,252,0.3)]'
                 : 'text-on-surface-variant hover:text-on-surface'
@@ -376,36 +479,70 @@ export default function CharacterModel3D({ className = '' }) {
       {/* Loading Overlay */}
       {isLoading && (
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
-          <div className="w-10 h-10 border-2 border-secondary/20 border-t-secondary rounded-full animate-spin mb-3"></div>
-          <span className="font-label-mono text-xs text-secondary tracking-wider">
-            ĐANG TẢI 3D MESH (GLB)...
+          <div className="w-8 h-8 sm:w-10 sm:h-10 border-2 border-secondary/20 border-t-secondary rounded-full animate-spin mb-2 sm:mb-3"></div>
+          <span className="font-label-mono text-[10px] sm:text-xs text-secondary tracking-wider">
+            ĐANG TẠO MÔ HÌNH 3D...
           </span>
         </div>
       )}
 
       {/* Error Overlay */}
       {errorMessage && !isLoading && (
-        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/90 p-6 text-center">
-          <span className="material-symbols-outlined text-red-400 text-3xl mb-2">error</span>
-          <p className="font-label-mono text-xs text-red-300 mb-3">{errorMessage}</p>
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/90 p-4 text-center">
+          <span className="material-symbols-outlined text-red-400 text-2xl mb-1">error</span>
+          <p className="font-label-mono text-[11px] text-red-300 mb-2">{errorMessage}</p>
           <button
             onClick={() => handleModelChange(activeModelId)}
-            className="font-label-mono text-xs bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg border border-white/20 text-on-surface cursor-pointer"
+            className="font-label-mono text-[10px] bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg border border-white/20 text-on-surface cursor-pointer"
           >
             Thử tải lại
           </button>
         </div>
       )}
 
-      {/* WebGL Canvas */}
-      <canvas ref={canvasRef} className="w-full h-full cursor-grab active:cursor-grabbing z-10" />
+      {/* WebGL Canvas with pan-y touch action */}
+      <canvas 
+        ref={canvasRef} 
+        className="w-full h-full cursor-grab active:cursor-grabbing z-10 touch-pan-y" 
+        style={{ touchAction: 'pan-y' }}
+      />
 
-      {/* Bottom Gesture / Action Controls */}
+      {/* Bottom Gesture Controls - Chibi Boy Dev (Matches Reference Image!) */}
+      {isChibi && !isLoading && !errorMessage && (
+        <div className="absolute bottom-2 sm:bottom-3 z-20 flex flex-wrap justify-center gap-1 sm:gap-1.5 px-2 max-w-[96%]">
+          {[
+            { label: '💻 Gõ code', act: 'code' },
+            { label: '👋 Vẫy chào', act: 'wave' },
+            { label: '💡 Suy nghĩ', act: 'think' },
+            { label: '🎉 Nhảy vui', act: 'cheer' }
+          ].map(({ label, act }) => (
+            <button
+              key={act}
+              onClick={() => handleActionClick(act)}
+              className={`font-label-mono text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg border transition-all cursor-pointer ${
+                currentAction === act
+                  ? 'bg-secondary/20 text-secondary border-secondary/50 font-bold shadow-[0_0_10px_rgba(0,238,252,0.35)]'
+                  : 'bg-white/5 border-white/10 text-on-surface-variant hover:text-on-surface hover:bg-white/10'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+          <button
+            onClick={handleToggleGlasses}
+            className="font-label-mono text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg border border-white/10 bg-white/5 text-on-surface-variant hover:text-on-surface hover:bg-white/10 transition-all cursor-pointer"
+          >
+            👓 {glassesOn ? 'Bỏ kính' : 'Đeo kính'}
+          </button>
+        </div>
+      )}
+
+      {/* Bottom Gesture Controls - Robot */}
       {isRobot && !isLoading && !errorMessage && (
-        <div className="absolute bottom-3 z-20 flex flex-wrap justify-center gap-1.5 px-3">
+        <div className="absolute bottom-2 sm:bottom-3 z-20 flex flex-wrap justify-center gap-1 sm:gap-1.5 px-2 max-w-[96%]">
           {[
             { label: '👋 Vẫy tay', act: 'Wave' },
-            { label: '👍 Thumbs Up', act: 'ThumbsUp' },
+            { label: '👍 Like', act: 'ThumbsUp' },
             { label: '💃 Nhảy', act: 'Dance' },
             { label: '⚡ Nghỉ', act: 'Idle' },
             { label: '🪑 Ngồi', act: 'Sitting' }
@@ -413,7 +550,7 @@ export default function CharacterModel3D({ className = '' }) {
             <button
               key={act}
               onClick={() => handleActionClick(act)}
-              className={`font-label-mono text-xs px-3 py-1 rounded-lg border transition-all cursor-pointer ${
+              className={`font-label-mono text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg border transition-all cursor-pointer ${
                 currentAction === act
                   ? 'bg-primary/20 text-primary border-primary/50 font-bold shadow-[0_0_10px_rgba(193,193,255,0.4)]'
                   : 'bg-white/5 border-white/10 text-on-surface-variant hover:text-on-surface hover:bg-white/10'
@@ -426,8 +563,8 @@ export default function CharacterModel3D({ className = '' }) {
       )}
 
       {/* Hint */}
-      <div className="absolute bottom-1 right-3 z-10 pointer-events-none font-label-mono text-[9px] text-white/30">
-        Cuộn chuột để zoom • Kéo để xoay
+      <div className="absolute bottom-1 right-2 sm:right-3 z-10 pointer-events-none font-label-mono text-[8px] sm:text-[9px] text-white/30 hidden xs:block">
+        Mắt & đầu theo chuột • Cuộn để zoom
       </div>
     </div>
   );

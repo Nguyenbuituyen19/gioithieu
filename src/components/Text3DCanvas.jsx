@@ -5,7 +5,7 @@ import opentype from 'opentype.js';
 const COLOR_THEMES = [
   { 
     id: 'amber', 
-    name: '🟡 Vàng Cam Hổ Phách', 
+    name: '🟡 Vàng Cam', 
     color: 0xffaa00, 
     emissive: 0x441800, 
     lightColor: 0xff8800,
@@ -14,7 +14,7 @@ const COLOR_THEMES = [
   },
   { 
     id: 'mint', 
-    name: '🟢 Xanh Neon Mint', 
+    name: '🟢 Xanh Mint', 
     color: 0x00f5a0, 
     emissive: 0x003318, 
     lightColor: 0x00d9f5,
@@ -33,9 +33,9 @@ const COLOR_THEMES = [
 ];
 
 /**
- * Text3DCanvas: True 3D WebGL Mesh Typography
- * Generates authentic extruded 3D geometry from chubby TTF font ('Baloo 2 ExtraBold')
- * with real physics bevels, specular reflections, rim lights, and mouse interaction.
+ * Text3DCanvas: Mobile-Optimized Real 3D WebGL Mesh Typography
+ * Dynamically recalculates 3D font scale and camera field of view based on container width
+ * so the 3D text fits on mobile screens (320px - 480px) without overflow.
  */
 export default function Text3DCanvas() {
   const containerRef = useRef(null);
@@ -45,6 +45,7 @@ export default function Text3DCanvas() {
 
   const materialsRef = useRef({ nameMat: null, introMat: null, rimLight: null });
   const themeRef = useRef(COLOR_THEMES[0]);
+  const textGroupRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -54,14 +55,15 @@ export default function Text3DCanvas() {
     let isDestroyed = false;
     let isVisible = true;
 
-    // 1. Scene, Camera, Renderer
-    const width = container.clientWidth || 550;
-    const height = 240;
+    // 1. Initial dimensions
+    const width = container.clientWidth || 360;
+    const isMobile = width < 540;
+    const height = isMobile ? 185 : 230;
 
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-    camera.position.set(0, 0, 110);
+    camera.position.set(0, 0, isMobile ? 115 : 105);
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -74,7 +76,7 @@ export default function Text3DCanvas() {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.35;
 
-    // 2. Studio Cyber Lighting
+    // 2. Studio Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
     scene.add(ambientLight);
 
@@ -91,17 +93,16 @@ export default function Text3DCanvas() {
     topSpecular.position.set(0, 40, 40);
     scene.add(topSpecular);
 
-    // 3. 3D Text Group with mouse rotation
+    // 3. Text Group
     const textGroup = new THREE.Group();
     scene.add(textGroup);
+    textGroupRef.current = textGroup;
 
-    // Helper: convert opentype font path to THREE.Shapes
     const createShapesFromText = (font, text, fontSize) => {
       const path = font.getPath(text, 0, 0, fontSize);
       const shapePath = new THREE.ShapePath();
 
       path.commands.forEach((cmd) => {
-        // Invert Y because font coordinates have Y pointing down
         if (cmd.type === 'M') shapePath.moveTo(cmd.x, -cmd.y);
         else if (cmd.type === 'L') shapePath.lineTo(cmd.x, -cmd.y);
         else if (cmd.type === 'Q') shapePath.quadraticCurveTo(cmd.x1, -cmd.y1, cmd.x, -cmd.y);
@@ -112,7 +113,7 @@ export default function Text3DCanvas() {
       return shapePath.toShapes(true);
     };
 
-    // 4. Load TTF and generate 3D Extruded Meshes
+    // 4. Load Font & Generate Extruded 3D Meshes
     const fontUrl = `${import.meta.env.BASE_URL}fonts/baloo2-extrabold.ttf`;
 
     fetch(fontUrl)
@@ -123,12 +124,12 @@ export default function Text3DCanvas() {
         const font = opentype.parse(buffer);
 
         // Line 1: "Chào, mình là"
-        const introShapes = createShapesFromText(font, 'Chào, mình là', 13.5);
+        const introShapes = createShapesFromText(font, 'Chào, mình là', 13);
         const introGeo = new THREE.ExtrudeGeometry(introShapes, {
-          depth: 3.5,
+          depth: 3.2,
           bevelEnabled: true,
-          bevelThickness: 1.0,
-          bevelSize: 0.6,
+          bevelThickness: 0.9,
+          bevelSize: 0.5,
           bevelSegments: 3
         });
         introGeo.computeVertexNormals();
@@ -145,13 +146,13 @@ export default function Text3DCanvas() {
 
         const introMesh = new THREE.Mesh(introGeo, introMat);
 
-        // Line 2: "Nguyễn Bùi Tuyển" (Chubby 3D Headline)
-        const nameShapes = createShapesFromText(font, 'Nguyễn Bùi Tuyển', 22.5);
+        // Line 2: "Nguyễn Bùi Tuyển"
+        const nameShapes = createShapesFromText(font, 'Nguyễn Bùi Tuyển', 22);
         const nameGeo = new THREE.ExtrudeGeometry(nameShapes, {
-          depth: 6.5,
+          depth: 6.0,
           bevelEnabled: true,
-          bevelThickness: 1.8,
-          bevelSize: 1.0,
+          bevelThickness: 1.6,
+          bevelSize: 0.9,
           bevelSegments: 4
         });
         nameGeo.computeVertexNormals();
@@ -168,18 +169,22 @@ export default function Text3DCanvas() {
 
         const nameMesh = new THREE.Mesh(nameGeo, nameMat);
 
-        // Position meshes relative to each other
-        introMesh.position.set(0, 14, 0);
-        nameMesh.position.set(0, -14, 0);
+        introMesh.position.set(0, 13, 0);
+        nameMesh.position.set(0, -13, 0);
 
         textGroup.add(introMesh);
         textGroup.add(nameMesh);
 
-        // Center group in viewport
+        // Center group
         const box = new THREE.Box3().setFromObject(textGroup);
         const center = box.getCenter(new THREE.Vector3());
         introMesh.position.x -= center.x;
         nameMesh.position.x -= center.x;
+
+        // Apply responsive scale factor for small screens
+        const currentW = container.clientWidth || 360;
+        const scaleFactor = Math.min(1.0, Math.max(0.62, (currentW - 16) / 470));
+        textGroup.scale.setScalar(scaleFactor);
 
         setIsLoaded(true);
       })
@@ -187,22 +192,24 @@ export default function Text3DCanvas() {
         console.error('Failed to generate 3D text meshes:', err);
       });
 
-    // 5. Mouse Interaction for 3D Tilt
-    let mouseX = 0;
-    let mouseY = 0;
+    // 5. Mouse/Touch Interaction for 3D Tilt
     let targetRotX = 0;
     let targetRotY = 0;
 
-    const handleMouseMove = (e) => {
+    const updateTilt = (clientX, clientY) => {
       const rect = container.getBoundingClientRect();
       const cX = rect.left + rect.width / 2;
       const cY = rect.top + rect.height / 2;
 
-      const normX = (e.clientX - cX) / (window.innerWidth / 2);
-      const normY = (e.clientY - cY) / (window.innerHeight / 2);
+      const normX = (clientX - cX) / (window.innerWidth / 2);
+      const normY = (clientY - cY) / (window.innerHeight / 2);
 
-      targetRotY = Math.max(-0.45, Math.min(0.45, normX * 0.45));
-      targetRotX = Math.max(-0.35, Math.min(0.35, -normY * 0.35));
+      targetRotY = Math.max(-0.35, Math.min(0.35, normX * 0.35));
+      targetRotX = Math.max(-0.25, Math.min(0.25, -normY * 0.25));
+    };
+
+    const handleMouseMove = (e) => {
+      updateTilt(e.clientX, e.clientY);
     };
 
     const handleMouseLeave = () => {
@@ -213,14 +220,23 @@ export default function Text3DCanvas() {
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     container.addEventListener('mouseleave', handleMouseLeave);
 
-    // 6. Resize Observer
+    // 6. Resize Observer - Auto scales 3D model & camera on mobile rotation/resize
     const resizeObserver = new ResizeObserver(() => {
       if (!container || isDestroyed) return;
       const w = container.clientWidth;
       if (w > 0) {
-        camera.aspect = w / height;
+        const mob = w < 540;
+        const h = mob ? 185 : 230;
+
+        camera.aspect = w / h;
+        camera.position.z = mob ? 115 : 105;
         camera.updateProjectionMatrix();
-        renderer.setSize(w, height);
+        renderer.setSize(w, h);
+
+        if (textGroupRef.current) {
+          const factor = Math.min(1.0, Math.max(0.62, (w - 16) / 470));
+          textGroupRef.current.scale.setScalar(factor);
+        }
       }
     });
     resizeObserver.observe(container);
@@ -246,12 +262,9 @@ export default function Text3DCanvas() {
       const now = performance.now();
       const time = (now - startTime) * 0.001;
 
-      // Smooth damping interpolation
       textGroup.rotation.y += (targetRotY - textGroup.rotation.y) * 0.06;
       textGroup.rotation.x += (targetRotX - textGroup.rotation.x) * 0.06;
-
-      // Subtle breathing float
-      textGroup.position.y = Math.sin(time * 1.5) * 1.2;
+      textGroup.position.y = Math.sin(time * 1.5) * 1.0;
 
       renderer.render(scene, camera);
     };
@@ -269,7 +282,6 @@ export default function Text3DCanvas() {
     };
   }, []);
 
-  // Handle color change
   const handleColorChange = (themeId) => {
     setActiveThemeId(themeId);
     const theme = COLOR_THEMES.find((t) => t.id === themeId);
@@ -287,28 +299,32 @@ export default function Text3DCanvas() {
 
   return (
     <div ref={containerRef} className="relative w-full flex flex-col items-center lg:items-start select-none">
-      {/* Real 3D WebGL Canvas */}
-      <div className="relative w-full h-[240px] flex items-center justify-center">
+      {/* Real 3D WebGL Canvas with pan-y touch-action so mobile vertical scroll is smooth */}
+      <div className="relative w-full h-[185px] sm:h-[210px] md:h-[230px] flex items-center justify-center">
         {!isLoaded && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-8 h-8 border-2 border-secondary/30 border-t-secondary rounded-full animate-spin"></div>
+            <div className="w-7 h-7 border-2 border-secondary/30 border-t-secondary rounded-full animate-spin"></div>
           </div>
         )}
-        <canvas ref={canvasRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
+        <canvas 
+          ref={canvasRef} 
+          className="w-full h-full cursor-grab active:cursor-grabbing touch-pan-y" 
+          style={{ touchAction: 'pan-y' }}
+        />
       </div>
 
-      {/* Palette Selector Bar */}
-      <div className="flex items-center gap-2 mt-1 bg-white/5 border border-white/10 p-1 rounded-xl backdrop-blur-md">
-        <span className="font-label-mono text-[10px] text-on-surface-variant/70 px-2 uppercase tracking-wider font-semibold">
-          Màu mô hình 3D:
+      {/* Palette Selector Bar - Compact & wrap-friendly on mobile */}
+      <div className="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 mt-2 bg-white/5 border border-white/10 p-1 rounded-xl backdrop-blur-md max-w-full">
+        <span className="font-label-mono text-[9px] sm:text-[10px] text-on-surface-variant/70 px-1.5 uppercase tracking-wider font-semibold">
+          Màu chữ:
         </span>
         {COLOR_THEMES.map((theme) => (
           <button
             key={theme.id}
             onClick={() => handleColorChange(theme.id)}
-            className={`font-label-mono text-[11px] px-2.5 py-0.5 rounded-lg transition-all cursor-pointer ${
+            className={`font-label-mono text-[10px] sm:text-[11px] px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
               activeThemeId === theme.id
-                ? 'bg-white/15 text-white border border-white/30 font-bold shadow-md'
+                ? 'bg-white/15 text-white border border-white/30 font-bold shadow-sm'
                 : 'text-on-surface-variant hover:text-white hover:bg-white/5'
             }`}
           >
