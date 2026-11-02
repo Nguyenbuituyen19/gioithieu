@@ -527,19 +527,8 @@ export default function CharacterModel3D({ className = '' }) {
             ROBOT TRỢ LÝ 3D • PBR WEBGL
           </span>
         </div>
-        <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
-          <a
-            href={getModelUrl('robot.glb')}
-            download="assistant-robot.glb"
-            className="font-label-mono text-[9px] sm:text-[10px] text-secondary hover:text-white bg-secondary/15 hover:bg-secondary/25 border border-secondary/30 px-2 py-0.5 rounded-md backdrop-blur-md transition-all flex items-center gap-1 cursor-pointer shadow-[0_0_8px_rgba(0,238,252,0.2)]"
-            title="Tải file 3D GLB về máy"
-          >
-            <span>⬇️</span>
-            <span>Tải .GLB</span>
-          </a>
-          <div className="font-label-mono text-[9px] sm:text-[10px] text-on-surface-variant/80 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md backdrop-blur-md">
-            Kéo xoay 360°
-          </div>
+        <div className="font-label-mono text-[9px] sm:text-[10px] text-on-surface-variant/80 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md backdrop-blur-md pointer-events-auto">
+          Dõi theo chuột • Kéo xoay 360°
         </div>
       </div>
 

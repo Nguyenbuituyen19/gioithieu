@@ -123,4 +123,3 @@ model.position.y = baseY + breathOffset;
    }, { threshold: 0.1 });
    ```
 4. **Memory Disposal**: Always dispose geometries, materials, textures, loaders, and renderers in cleanup functions to prevent WebGL memory leaks.
-
