@@ -32,7 +32,7 @@ const SKILL_CATEGORIES = [
 
 export default function Expertise() {
   return (
-    <section id="expertise" className="relative min-h-screen flex flex-col justify-center py-16 md:py-section-gap-desktop px-4 sm:px-gutter max-w-container-max mx-auto">
+    <section id="expertise" className="relative min-h-screen flex flex-col justify-center py-16 md:py-section-gap-desktop px-4 sm:px-gutter max-w-container-max mx-auto scroll-mt-20 sm:scroll-mt-24">
       <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
         {/* Left Side: Skills Cards */}
         <div className="w-full lg:w-1/2 flex flex-col gap-6 sm:gap-8">

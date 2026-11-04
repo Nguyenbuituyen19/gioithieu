@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import Reveal from './Reveal';
 import TiltCard from './TiltCard';
 import TechBadge from './TechBadge';
@@ -70,7 +70,7 @@ const PROJECTS = [
 
 export default function Work() {
   return (
-    <section id="work" className="relative min-h-screen flex flex-col justify-center py-16 md:py-section-gap-desktop px-4 sm:px-gutter max-w-container-max mx-auto">
+    <section id="work" className="relative min-h-screen flex flex-col justify-center py-16 md:py-section-gap-desktop px-4 sm:px-gutter max-w-container-max mx-auto scroll-mt-20 sm:scroll-mt-24">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] rounded-full bg-secondary/5 blur-[120px] pointer-events-none"></div>
 
       <div className="mb-10 sm:mb-14">
@@ -96,8 +96,14 @@ export default function Work() {
               maxTilt={8}
               perspective={1000}
             >
-              {/* Image Container */}
-              <div className="h-44 sm:h-56 relative overflow-hidden border-b border-white/10 group flex items-center justify-center bg-surface-container-lowest translate-z-10">
+              {/* Image Container with direct click link */}
+              <a 
+                href={proj.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-44 sm:h-56 relative overflow-hidden border-b border-white/10 group flex items-center justify-center bg-surface-container-lowest translate-z-10 cursor-pointer block"
+                title={`Xem ${proj.title}`}
+              >
                 {proj.image ? (
                   <img 
                     src={`${import.meta.env.BASE_URL}${proj.image.replace(/^\//, '')}`} 
@@ -123,14 +129,14 @@ export default function Work() {
                 </div>
 
                 {proj.featured && (
-                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 translate-z-30">
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 translate-z-30 pointer-events-none">
                     <span className="font-label-mono text-[10px] sm:text-[11px] font-semibold text-secondary bg-surface/90 border border-secondary/40 backdrop-blur-md px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full flex items-center gap-1.5 shadow-lg pill-3d">
                       <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
                       Production Live
                     </span>
                   </div>
                 )}
-              </div>
+              </a>
 
               {/* Content info */}
               <div className="p-5 sm:p-7 md:p-8 flex flex-col flex-grow transform-style-3d">
@@ -143,8 +149,15 @@ export default function Work() {
                   </span>
                 </div>
 
-                <h3 className="font-headline-md text-lg sm:text-xl font-bold text-on-surface mb-2.5 group-hover:text-primary transition-colors translate-z-20">
-                  {proj.title}
+                <h3 className="font-headline-md text-lg sm:text-xl font-bold text-on-surface mb-2.5 transition-colors translate-z-20">
+                  <a 
+                    href={proj.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="hover:text-secondary hover:underline underline-offset-4 transition-colors cursor-pointer"
+                  >
+                    {proj.title}
+                  </a>
                 </h3>
                 
                 <p className="font-body-md text-on-surface-variant mb-4 text-xs sm:text-sm leading-relaxed translate-z-10">
@@ -155,7 +168,7 @@ export default function Work() {
                   <ul className="mb-5 flex flex-col gap-1.5 text-xs text-on-surface-variant/90 border-l border-primary/20 pl-3 translate-z-10">
                     {proj.highlights.map((h, hIdx) => (
                       <li key={hIdx} className="flex items-start gap-1.5">
-                        <span className="text-primary mt-0.5 font-bold shrink-0">›</span>
+                        <span className="text-secondary mt-0.5 font-bold shrink-0">›</span>
                         <span>{h}</span>
                       </li>
                     ))}
@@ -173,7 +186,7 @@ export default function Work() {
                     href={proj.link}
                     target="_blank"
                     rel="noopener noreferrer" 
-                    className="font-label-mono text-xs text-secondary hover:text-primary flex items-center gap-1.5 group/btn font-semibold pill-3d px-3 py-1.5 rounded-lg bg-secondary/10 border border-secondary/20 transition-all cursor-pointer"
+                    className="font-label-mono text-xs text-secondary hover:text-background hover:bg-secondary flex items-center gap-1.5 group/btn font-semibold pill-3d px-3.5 py-1.5 rounded-lg bg-secondary/10 border border-secondary/30 transition-all cursor-pointer hover:shadow-[0_0_15px_rgba(0,238,252,0.6)]"
                   >
                     Xem sản phẩm 
                     <span className="material-symbols-outlined text-sm project-arrow transition-transform duration-300">

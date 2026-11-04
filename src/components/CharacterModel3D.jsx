@@ -101,6 +101,7 @@ export default function CharacterModel3D({ className = '' }) {
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.enablePan = false;
+    controls.enableZoom = false; // Never hijack page scrolling
     controls.target.set(0, 0.12, 0);
     controls.minDistance = 1.8;
     controls.maxDistance = 5.5;
@@ -648,7 +649,7 @@ export default function CharacterModel3D({ className = '' }) {
 
       {/* Hint */}
       <div className="absolute bottom-1 right-2 sm:right-3 z-10 pointer-events-none font-label-mono text-[8px] sm:text-[9px] text-white/30 hidden xs:block">
-        Cuộn để zoom • Kéo để xoay
+        Kéo để xoay 360°
       </div>
     </div>
   );

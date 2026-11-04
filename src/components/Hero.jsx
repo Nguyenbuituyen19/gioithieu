@@ -6,7 +6,7 @@ import TechBadge from './TechBadge';
 
 export default function Hero() {
   return (
-    <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-gutter overflow-hidden">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-gutter overflow-hidden scroll-mt-20 sm:scroll-mt-24">
       {/* Ambient background glows */}
       <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[550px] h-[350px] sm:h-[550px] rounded-full bg-primary/10 blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[300px] sm:w-[450px] h-[300px] sm:h-[450px] rounded-full bg-secondary/10 blur-[100px] pointer-events-none"></div>
@@ -64,14 +64,22 @@ export default function Hero() {
               </a>
               <a 
                 href="#work" 
-                className="w-full sm:w-auto btn-3d bg-secondary/20 hover:bg-secondary/30 text-secondary border border-secondary/40 font-bold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-center flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full sm:w-auto btn-3d bg-secondary/20 hover:bg-secondary/35 text-secondary hover:text-white border border-secondary/40 font-bold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-center flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base transition-all hover:shadow-[0_0_20px_rgba(0,238,252,0.35)]"
               >
                 <span className="material-symbols-outlined text-lg sm:text-xl">view_in_ar</span>
                 Khám Phá Dự Án
               </a>
               <a 
                 href="#contact" 
-                className="w-full sm:w-auto btn-3d glass-card text-on-surface hover:text-primary font-bold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-center cursor-pointer text-sm sm:text-base"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full sm:w-auto btn-3d glass-card text-on-surface hover:text-secondary font-bold px-6 sm:px-8 py-3.5 sm:py-4 rounded-xl text-center cursor-pointer text-sm sm:text-base hover:border-secondary/40 hover:shadow-[0_0_20px_rgba(0,238,252,0.25)] transition-all"
               >
                 Liên Hệ Với Mình
               </a>

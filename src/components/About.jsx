@@ -98,7 +98,7 @@ export default function About() {
   }, []);
 
   return (
-    <section id="about" className="relative min-h-screen flex flex-col justify-center py-16 md:py-section-gap-desktop px-4 sm:px-gutter max-w-container-max mx-auto">
+    <section id="about" className="relative min-h-screen flex flex-col justify-center py-16 md:py-section-gap-desktop px-4 sm:px-gutter max-w-container-max mx-auto scroll-mt-20 sm:scroll-mt-24">
       <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start">
         
         {/* Left Column: Bio & 3D Stats */}

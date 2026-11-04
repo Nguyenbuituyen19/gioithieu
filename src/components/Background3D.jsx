@@ -224,7 +224,7 @@ export default function Background3D() {
       />
       
       {/* 3D WebGL Canvas Layer */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-80" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-80 pointer-events-none" />
 
       {/* Ambient Cyber Fog Overlays */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#131314]/80 via-transparent to-[#131314]/90 pointer-events-none" />

@@ -51,7 +51,7 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="relative min-h-screen flex flex-col justify-center py-16 md:py-section-gap-desktop px-4 sm:px-gutter max-w-container-max mx-auto">
+    <section id="contact" className="relative min-h-screen flex flex-col justify-center py-16 md:py-section-gap-desktop px-4 sm:px-gutter max-w-container-max mx-auto scroll-mt-20 sm:scroll-mt-24">
       {/* Background glow */}
       <div className="absolute bottom-0 right-0 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] rounded-full bg-primary/10 blur-[130px] pointer-events-none"></div>
 
@@ -73,7 +73,7 @@ export default function Contact() {
 
           <div className="flex flex-col gap-3.5 sm:gap-4">
             <Reveal delay={150}>
-              <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-3.5 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-primary/30">
+              <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-3.5 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-secondary/40 transition-all">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-md">
                   <span className="material-symbols-outlined text-lg sm:text-xl">call</span>
                 </div>
@@ -87,7 +87,7 @@ export default function Contact() {
             </Reveal>
 
             <Reveal delay={250}>
-              <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-3.5 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-primary/30">
+              <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-3.5 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-secondary/40 transition-all">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center text-secondary shrink-0 shadow-md">
                   <span className="material-symbols-outlined text-lg sm:text-xl">mail</span>
                 </div>
@@ -101,7 +101,7 @@ export default function Contact() {
             </Reveal>
 
             <Reveal delay={350}>
-              <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-3.5 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-primary/30">
+              <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-3.5 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-secondary/40 transition-all">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 shadow-md">
                   <span className="material-symbols-outlined text-lg sm:text-xl">location_on</span>
                 </div>
@@ -115,7 +115,7 @@ export default function Contact() {
             </Reveal>
 
             <Reveal delay={450}>
-              <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-3.5 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-primary/30">
+              <div className="flex items-center gap-3 sm:gap-4 p-3 sm:p-3.5 rounded-xl pill-3d bg-white/[0.02] border border-white/5 hover:border-secondary/40 transition-all">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-secondary/10 border border-secondary/20 flex items-center justify-center text-secondary shrink-0 shadow-md">
                   <span className="material-symbols-outlined text-lg sm:text-xl">share</span>
                 </div>
@@ -126,7 +126,7 @@ export default function Contact() {
                       href="https://github.com/Nguyenbuituyen19" 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="text-on-surface hover:text-primary transition-colors text-[11px] sm:text-xs font-label-mono flex items-center gap-1 pill-3d px-2.5 py-1 rounded-md bg-white/5 border border-white/10"
+                      className="text-on-surface hover:text-secondary hover:border-secondary/40 hover:bg-secondary/10 transition-all text-[11px] sm:text-xs font-label-mono flex items-center gap-1 pill-3d px-2.5 py-1 rounded-md bg-white/5 border border-white/10 cursor-pointer"
                     >
                       GitHub ↗
                     </a>
@@ -134,7 +134,7 @@ export default function Contact() {
                       href="https://www.facebook.com/tuyennguyenbui19?locale=vi_VN" 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="text-on-surface hover:text-primary transition-colors text-[11px] sm:text-xs font-label-mono flex items-center gap-1 pill-3d px-2.5 py-1 rounded-md bg-white/5 border border-white/10"
+                      className="text-on-surface hover:text-secondary hover:border-secondary/40 hover:bg-secondary/10 transition-all text-[11px] sm:text-xs font-label-mono flex items-center gap-1 pill-3d px-2.5 py-1 rounded-md bg-white/5 border border-white/10 cursor-pointer"
                     >
                       Facebook ↗
                     </a>
@@ -142,7 +142,7 @@ export default function Contact() {
                       href={`${import.meta.env.BASE_URL}CV.pdf`} 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="text-secondary hover:text-primary transition-colors text-[11px] sm:text-xs font-label-mono font-semibold flex items-center gap-1 pill-3d px-2.5 py-1 rounded-md bg-secondary/10 border border-secondary/20"
+                      className="text-secondary hover:text-white hover:bg-secondary/20 hover:border-secondary/50 transition-all text-[11px] sm:text-xs font-label-mono font-semibold flex items-center gap-1 pill-3d px-2.5 py-1 rounded-md bg-secondary/10 border border-secondary/20 cursor-pointer"
                     >
                       Tải CV ↗
                     </a>

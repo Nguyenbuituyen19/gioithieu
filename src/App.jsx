@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from 'react';
+﻿import React from 'react';
 import CursorGlow from './components/CursorGlow';
 import Background3D from './components/Background3D';
 import ScrollProgress from './components/ScrollProgress';
@@ -12,27 +12,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 function App() {
-  useEffect(() => {
-    const handleScroll = () => {
-      const workSection = document.getElementById('work');
-      if (!workSection) return;
-      
-      const workTop = workSection.offsetTop;
-      const scrollPosition = window.scrollY;
-      
-      // Kích hoạt scroll-snapping khi ở vùng Hero và đầu Work, vô hiệu hóa khi cuộn tiếp xuống dưới
-      if (scrollPosition > workTop + 50) {
-        document.documentElement.classList.remove('enable-snap');
-      } else {
-        document.documentElement.classList.add('enable-snap');
-      }
-    };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <div className="min-h-screen text-on-surface bg-[#131314] relative selection:bg-primary/30 selection:text-white">

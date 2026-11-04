@@ -59,10 +59,10 @@ export default function Reveal({
         transitionDelay: `${delay}ms`,
         transformOrigin: 'center bottom'
       }}
-      className={`transform-style-3d transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${className} ${
+      className={`transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${className} ${
         isVisible
-          ? 'opacity-100 translate-y-0 translate-x-0 [transform:perspective(1000px)_rotateX(0deg)_rotateY(0deg)_scale(1)]'
-          : `opacity-0 ${getInitialTransforms()}`
+          ? 'opacity-100 translate-y-0 translate-x-0 transform-none pointer-events-auto'
+          : `opacity-0 pointer-events-none ${getInitialTransforms()}`
       }`}
     >
       {children}
