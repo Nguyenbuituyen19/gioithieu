@@ -18,17 +18,8 @@ export default function Hero() {
         
         {/* Left Column: True 3D WebGL Mesh Typography & Tactile CTAs */}
         <div className="w-full lg:w-7/12 text-center lg:text-left flex flex-col items-center lg:items-start">
-          <Reveal delay={0}>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container/90 border border-primary/30 text-primary mb-4 sm:mb-6 pill-3d backdrop-blur-md shadow-lg">
-              <span className="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
-              <span className="font-label-mono text-[11px] sm:text-xs uppercase tracking-widest font-semibold text-secondary">
-                Intern / Fresher Frontend Developer
-              </span>
-            </div>
-          </Reveal>
-          
           {/* Real 3D Extruded WebGL Mesh Typography */}
-          <Reveal delay={150} className="w-full">
+          <Reveal delay={100} className="w-full">
             <Text3DCanvas />
           </Reveal>
 
