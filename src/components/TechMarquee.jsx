@@ -1,19 +1,24 @@
-import React, { useEffect, useRef } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
+import TechBadge from './TechBadge';
 
 const MARQUEE_TECHS = [
   'React 19',
-  'Next.js 15',
+  'Next.js',
   'TypeScript',
   'Tailwind CSS',
-  'Three.js WebGL',
+  'Three.js',
   'Supabase',
   'Node.js',
   'PostgreSQL',
-  'VietQR Pay',
+  'VietQR',
   'Vite',
   'Figma',
   'Git & GitHub',
-  'RESTful APIs',
+  'Express.js',
+  'HTML5 & CSS3',
+  'REST API',
+  'VS Code',
+  'Postman',
   'Vercel'
 ];
 
@@ -31,8 +36,8 @@ export default function TechMarquee() {
       const delta = currentScrollY - lastScrollY;
       lastScrollY = currentScrollY;
 
-      velocityRef.current += delta * 0.04;
-      velocityRef.current = Math.max(-8, Math.min(8, velocityRef.current));
+      velocityRef.current += delta * 0.05;
+      velocityRef.current = Math.max(-10, Math.min(10, velocityRef.current));
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -40,7 +45,7 @@ export default function TechMarquee() {
     let rafId;
     const animate = () => {
       if (!isHoveredRef.current) {
-        velocityRef.current += (0.8 - velocityRef.current) * 0.05;
+        velocityRef.current += (0.85 - velocityRef.current) * 0.05;
         offsetRef.current += velocityRef.current;
 
         if (containerRef.current) {
@@ -48,7 +53,9 @@ export default function TechMarquee() {
           if (halfWidth > 0) {
             if (offsetRef.current >= halfWidth) offsetRef.current -= halfWidth;
             if (offsetRef.current < 0) offsetRef.current += halfWidth;
-            containerRef.current.style.transform = `translate3d(-${offsetRef.current}px, 0, 0)`;
+            
+            const skewX = Math.max(-5, Math.min(5, (velocityRef.current - 0.85) * 0.5));
+            containerRef.current.style.transform = `translate3d(-${offsetRef.current}px, 0, 0) skewX(${skewX}deg)`;
           }
         }
       }
@@ -58,31 +65,32 @@ export default function TechMarquee() {
     rafId = requestAnimationFrame(animate);
 
     return () => {
-      window.removeEventListener('scroll', handleScroll);
       cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
-  const doubleTechs = [...MARQUEE_TECHS, ...MARQUEE_TECHS];
-
   return (
     <div 
-      className="w-full bg-canvas-parchment border-y border-hairline py-4 overflow-hidden relative select-none"
+      className="relative w-full overflow-hidden py-4 sm:py-7 border-y border-white/10 bg-surface-container-lowest/60 backdrop-blur-xl z-20"
       onMouseEnter={() => { isHoveredRef.current = true; }}
       onMouseLeave={() => { isHoveredRef.current = false; }}
     >
+      {/* Responsive edge masks */}
+      <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-24 bg-gradient-to-r from-[#131314] to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-24 bg-gradient-to-l from-[#131314] to-transparent z-10 pointer-events-none" />
+
       <div 
         ref={containerRef}
-        className="flex items-center gap-6 whitespace-nowrap will-change-transform"
+        className="flex w-max gap-3 sm:gap-6 will-change-transform select-none items-center"
       >
-        {doubleTechs.map((tech, idx) => (
-          <div 
+        {[...MARQUEE_TECHS, ...MARQUEE_TECHS].map((tech, idx) => (
+          <TechBadge
             key={idx}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-hairline text-ink text-[13px] sm:text-[14px] font-medium tracking-tight shadow-sm"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-primary/70"></span>
-            <span>{tech}</span>
-          </div>
+            name={tech}
+            size="md"
+            className="hover:scale-105 shadow-md cursor-pointer transition-transform"
+          />
         ))}
       </div>
     </div>

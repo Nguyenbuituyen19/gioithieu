@@ -1,45 +1,64 @@
-import React from 'react';
+﻿import React, { useEffect } from 'react';
+import CursorGlow from './components/CursorGlow';
+import Background3D from './components/Background3D';
 import ScrollProgress from './components/ScrollProgress';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import TechMarquee from './components/TechMarquee';
-import Work from './components/Work';
 import Expertise from './components/Expertise';
+import Work from './components/Work';
 import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 function App() {
+  useEffect(() => {
+    const handleScroll = () => {
+      const workSection = document.getElementById('work');
+      if (!workSection) return;
+      
+      const workTop = workSection.offsetTop;
+      const scrollPosition = window.scrollY;
+      
+      // Kích hoạt scroll-snapping khi ở vùng Hero và đầu Work, vô hiệu hóa khi cuộn tiếp xuống dưới
+      if (scrollPosition > workTop + 50) {
+        document.documentElement.classList.remove('enable-snap');
+      } else {
+        document.documentElement.classList.add('enable-snap');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen text-ink bg-canvas antialiased selection:bg-primary/20 selection:text-primary">
-      {/* Apple Minimal Scroll Indicator */}
+    <div className="min-h-screen text-on-surface bg-[#131314] relative selection:bg-primary/30 selection:text-white">
+      {/* Dynamic Laser Scroll Progress Bar */}
       <ScrollProgress />
 
-      {/* Apple Two-Tier Navigation (Global Nav + Sub-Nav Frosted) */}
+      {/* Immersive 3D WebGL & Cyber Space Background */}
+      <Background3D />
+
+      {/* Background Interactive Mouse Glow */}
+      <CursorGlow />
+
+      {/* Header / Navbar */}
       <Header />
 
-      {/* Main Content: Alternating Full-Bleed Tiles */}
-      <main className="w-full">
-        {/* Tile 1: Canvas Light (White) - Hero with 3D Robot */}
+      {/* Main Content Layout */}
+      <main className="relative z-10">
         <Hero />
-
-        {/* Transitional Parchment Strip - Tech Marquee */}
         <TechMarquee />
-
-        {/* Tile 2: Near-Black Tile (#272729) - Featured Work & Projects */}
         <Work />
-
-        {/* Tile 3: Canvas Parchment (#f5f5f7) - Expertise & Skills */}
         <Expertise />
-
-        {/* Tile 4: Near-Black Tile 2 (#2a2a2c) - Experience & Background */}
         <About />
-
-        {/* Tile 5: Canvas Light (White) - Contact & Connect */}
         <Contact />
       </main>
 
-      {/* Apple Multicolumn Parchment Footer */}
+      {/* Footer */}
       <Footer />
     </div>
   );

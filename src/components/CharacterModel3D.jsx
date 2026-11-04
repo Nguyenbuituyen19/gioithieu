@@ -517,39 +517,39 @@ export default function CharacterModel3D({ className = '' }) {
   return (
     <div 
       ref={containerRef} 
-      className={`relative w-full h-[360px] xs:h-[400px] sm:h-[460px] md:h-[500px] lg:h-[540px] flex flex-col items-center justify-center rounded-[18px] bg-canvas-parchment/60 border border-hairline overflow-hidden select-none ${className}`}
+      className={`relative w-full h-[320px] xs:h-[360px] sm:h-[420px] md:h-[480px] lg:h-[520px] flex flex-col items-center justify-center rounded-3xl glass-card border border-white/10 shadow-[0_0_35px_rgba(0,238,252,0.15)] overflow-hidden select-none ${className}`}
     >
       {/* Top HUD Header */}
-      <div className="absolute top-3.5 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
-        <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-primary"></span>
-          <span className="text-[12px] font-semibold text-ink uppercase tracking-wider">
-            Robot Trợ Lý 3D • WebGL
+      <div className="absolute top-2.5 sm:top-3 left-3 sm:left-4 right-3 sm:right-4 z-20 flex items-center justify-between pointer-events-none">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-secondary animate-pulse shadow-[0_0_8px_#00eefc]"></span>
+          <span className="font-label-mono text-[9px] sm:text-[11px] font-bold text-secondary uppercase tracking-widest">
+            ROBOT TRỢ LÝ 3D • PBR WEBGL
           </span>
         </div>
-        <div className="text-[11px] text-ink-muted-48 bg-white/80 border border-black/10 px-2.5 py-0.5 rounded-full backdrop-blur-md pointer-events-auto">
-          Kéo xoay 360°
+        <div className="font-label-mono text-[9px] sm:text-[10px] text-on-surface-variant/80 bg-white/5 border border-white/10 px-2 py-0.5 rounded-md backdrop-blur-md pointer-events-auto">
+          Dõi theo chuột • Kéo xoay 360°
         </div>
       </div>
 
       {/* Loading Overlay */}
       {isLoading && (
-        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-white/85 backdrop-blur-sm">
-          <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mb-3"></div>
-          <span className="text-[13px] text-ink font-medium">
-            Đang tải mô hình 3D...
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 border-2 border-secondary/20 border-t-secondary rounded-full animate-spin mb-2 sm:mb-3"></div>
+          <span className="font-label-mono text-[10px] sm:text-xs text-secondary tracking-wider">
+            ĐANG TẢI ROBOT 3D (PBR)...
           </span>
         </div>
       )}
 
       {/* Error Overlay */}
       {errorMessage && !isLoading && (
-        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-white/95 p-4 text-center">
-          <span className="material-symbols-outlined text-red-500 text-2xl mb-1">error</span>
-          <p className="text-[13px] text-ink mb-3">{errorMessage}</p>
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/90 p-4 text-center">
+          <span className="material-symbols-outlined text-red-400 text-2xl mb-1">error</span>
+          <p className="font-label-mono text-[11px] text-red-300 mb-2">{errorMessage}</p>
           <button
             onClick={() => window.location.reload()}
-            className="text-[12px] bg-black/5 hover:bg-black/10 px-4 py-1.5 rounded-full border border-black/10 text-ink cursor-pointer"
+            className="font-label-mono text-[10px] bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg border border-white/20 text-on-surface cursor-pointer"
           >
             Tải lại trang
           </button>
@@ -563,17 +563,17 @@ export default function CharacterModel3D({ className = '' }) {
         style={{ touchAction: 'pan-y' }}
       />
 
-      {/* Bottom Gesture Controls - Apple Utility Capsules */}
+      {/* Bottom Gesture Controls - Robot Assistant */}
       {!isLoading && !errorMessage && (
-        <div className="absolute bottom-3 z-20 flex flex-wrap justify-center gap-1.5 px-3 max-w-[96%]">
+        <div className="absolute bottom-2 sm:bottom-3 z-20 flex flex-wrap justify-center gap-1 sm:gap-1.5 px-2 max-w-[96%]">
           {ANIMATIONS.map(({ label, act }) => (
             <button
               key={act}
               onClick={() => handleActionClick(act)}
-              className={`text-[12px] sm:text-[13px] px-3 py-1 rounded-full transition-all cursor-pointer font-normal ${
+              className={`font-label-mono text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg border transition-all cursor-pointer ${
                 currentAction === act
-                  ? 'bg-primary text-white shadow-sm'
-                  : 'bg-white/90 hover:bg-white text-ink border border-black/10'
+                  ? 'bg-secondary/20 text-secondary border-secondary/50 font-bold shadow-[0_0_10px_rgba(0,238,252,0.35)]'
+                  : 'bg-white/5 border-white/10 text-on-surface-variant hover:text-on-surface hover:bg-white/10'
               }`}
             >
               {label}
@@ -583,7 +583,7 @@ export default function CharacterModel3D({ className = '' }) {
       )}
 
       {/* Hint */}
-      <div className="absolute bottom-1 right-3 z-10 pointer-events-none text-[10px] text-ink-muted-48 hidden xs:block">
+      <div className="absolute bottom-1 right-2 sm:right-3 z-10 pointer-events-none font-label-mono text-[8px] sm:text-[9px] text-white/30 hidden xs:block">
         Cuộn để zoom • Kéo để xoay
       </div>
     </div>

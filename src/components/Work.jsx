@@ -1,5 +1,7 @@
-import React from 'react';
+﻿import React from 'react';
 import Reveal from './Reveal';
+import TiltCard from './TiltCard';
+import TechBadge from './TechBadge';
 
 const PROJECTS = [
   {
@@ -13,6 +15,7 @@ const PROJECTS = [
       'Tối ưu Core Web Vitals, accessibility và responsive toàn diện'
     ],
     tech: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'VietQR'],
+    bgGradient: 'from-emerald-950/40 to-teal-900/40',
     image: '/movillage.jpg',
     link: 'https://movillage.sgodata.com',
     featured: true
@@ -28,6 +31,7 @@ const PROJECTS = [
       'Tối ưu chuẩn SEO On-page và tốc độ phản hồi trang'
     ],
     tech: ['Next.js', 'React', 'TypeScript', 'Node.js', 'Supabase', 'PostgreSQL'],
+    bgGradient: 'from-purple-900/40 to-indigo-900/40',
     image: '/niceart.jpg',
     link: 'https://niceart.vn',
     featured: true
@@ -43,20 +47,22 @@ const PROJECTS = [
       'Phối hợp team backend tích hợp các RESTful APIs'
     ],
     tech: ['React', 'TypeScript', 'Tailwind CSS', 'REST API', 'Vite'],
+    bgGradient: 'from-cyan-950/40 to-blue-900/40',
     image: '/sgodata.jpg',
     link: 'https://github.com/Nguyenbuituyen19'
   },
   {
-    title: 'Personal Portfolio (Apple Museum Gallery)',
+    title: 'Personal Portfolio (Cyber-Minimalist 3D)',
     role: 'Creator & Developer',
     period: '2026',
-    desc: 'Trang web portfolio cá nhân mang phong cách Apple Design System với các khối full-bleed xen kẽ, nhịp điệu chữ SF Pro Display và mô hình Robot Trợ Lý 3D WebGL tương tác trực tiếp.',
+    desc: 'Trang web portfolio cá nhân mang phong cách Cyber Spatial 3D tối giản. Tích hợp vật thể Three.js WebGL tương tác chuột, 3D Tilt Cards đa tầng, thiết kế module hóa và CI/CD GitHub Actions.',
     highlights: [
-      'Robot Trợ Lý 3D WebGL PBR tương tác thời gian thực',
-      'Typography SF Pro Display với chuẩn negative letter-spacing',
-      'Hệ thống điều hướng 2 tầng chuẩn Apple (Global Nav + Sub-Nav)'
+      'Không gian Three.js WebGL tương tác thời gian thực',
+      'Hiệu ứng 3D Spatial Tilt & Glare thẻ dự án theo chuột',
+      'Tự động hóa triển khai sản phẩm với GitHub Actions'
     ],
     tech: ['React 19', 'Three.js', 'Vite', 'Tailwind CSS', 'GitHub Actions'],
+    bgGradient: 'from-blue-900/40 to-cyan-900/40',
     image: '/portfolio.jpg',
     link: 'https://github.com/Nguyenbuituyen19/gioithieu'
   }
@@ -64,125 +70,130 @@ const PROJECTS = [
 
 export default function Work() {
   return (
-    <section id="work" className="w-full bg-surface-tile-1 text-white py-16 sm:py-20 md:py-section px-4 sm:px-6 md:px-8">
-      <div className="w-full max-w-[1024px] mx-auto">
-        
-        {/* Section Header (Apple Display-lg: 40px / 600) */}
-        <div className="text-center sm:text-left mb-12 sm:mb-16">
-          <Reveal>
-            <span className="text-[13px] font-semibold text-primary-on-dark uppercase tracking-wider block mb-2">
-              Sản phẩm &amp; Kinh nghiệm thực chiến
-            </span>
-            <h2 className="font-display text-[32px] sm:text-[40px] font-semibold text-white leading-[1.10] tracking-[-0.015em] mb-3">
-              Dự án tiêu biểu.
-            </h2>
-            <p className="font-display text-[20px] sm:text-[24px] md:text-[28px] text-body-muted font-normal leading-[1.25] max-w-2xl">
-              Những sản phẩm số được hoàn thiện với độ chính xác cao và trải nghiệm người dùng tự nhiên.
-            </p>
-          </Reveal>
-        </div>
+    <section id="work" className="relative min-h-screen flex flex-col justify-center py-16 md:py-section-gap-desktop px-4 sm:px-gutter max-w-container-max mx-auto">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[600px] h-[350px] sm:h-[600px] rounded-full bg-secondary/5 blur-[120px] pointer-events-none"></div>
 
-        {/* 2-Column Product Grid (Apple Store Style) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-          {PROJECTS.map((proj, idx) => (
-            <Reveal key={idx} delay={idx * 100} className="h-full">
-              <div className="bg-surface-tile-2 rounded-[18px] border border-white/10 overflow-hidden flex flex-col h-full transition-transform hover:-translate-y-1 duration-300">
+      <div className="mb-10 sm:mb-14">
+        <Reveal>
+          <span className="font-label-mono text-label-mono text-primary mb-2 block uppercase tracking-widest text-xs sm:text-sm">
+            Sản phẩm &amp; Kinh nghiệm thực chiến
+          </span>
+          <h2 className="font-headline-lg-mobile md:font-headline-lg text-2xl sm:text-3xl md:text-4xl text-on-surface font-bold tracking-tight">
+            Các Dự Án Đã Phát Triển
+          </h2>
+          <p className="font-body-md text-on-surface-variant mt-2 max-w-2xl text-xs sm:text-sm md:text-base leading-relaxed">
+            Các sản phẩm web thực tế đã được triển khai phục vụ người dùng và doanh nghiệp, từ website du lịch nghỉ dưỡng song ngữ đến hệ thống quản trị CMS &amp; ERP/CRM.
+          </p>
+        </Reveal>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 perspective-1000">
+        {PROJECTS.map((proj, idx) => (
+          <Reveal key={idx} delay={idx * 120} className="h-full">
+            <TiltCard 
+              className="h-full"
+              innerClassName="project-card glass-card rounded-2xl overflow-hidden flex flex-col h-full border border-white/10 group shadow-xl"
+              maxTilt={8}
+              perspective={1000}
+            >
+              {/* Image Container */}
+              <div className="h-44 sm:h-56 relative overflow-hidden border-b border-white/10 group flex items-center justify-center bg-surface-container-lowest translate-z-10">
+                {proj.image ? (
+                  <img 
+                    src={`${import.meta.env.BASE_URL}${proj.image.replace(/^\//, '')}`} 
+                    alt={proj.title}
+                    className="w-full h-full object-cover project-image transition-all duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      const fallback = e.target.nextSibling;
+                      if (fallback) fallback.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
                 
-                {/* Product Imagery */}
-                <div className="h-48 sm:h-56 relative overflow-hidden bg-surface-tile-3 flex items-center justify-center">
-                  {proj.image ? (
-                    <img 
-                      src={`${import.meta.env.BASE_URL}${proj.image.replace(/^\//, '')}`} 
-                      alt={proj.title}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                      loading="lazy"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        const fallback = e.target.nextSibling;
-                        if (fallback) fallback.style.display = 'flex';
-                      }}
-                    />
-                  ) : null}
-                  
-                  <div 
-                    className="w-full h-full bg-surface-tile-3 flex items-center justify-center absolute inset-0"
-                    style={{ display: proj.image ? 'none' : 'flex' }}
-                  >
-                    <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/40 text-xs">
-                      &lt;/&gt;
-                    </div>
+                <div 
+                  className={`w-full h-full bg-gradient-to-br ${proj.bgGradient} flex items-center justify-center absolute inset-0`}
+                  style={{ display: proj.image ? 'none' : 'flex' }}
+                >
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:16px_16px]"></div>
+                  <div className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center text-white/20 font-label-mono text-sm tracking-wider">
+                    &lt;/&gt;
                   </div>
-
-                  {proj.featured && (
-                    <div className="absolute top-3.5 right-3.5 z-20">
-                      <span className="text-[11px] font-medium text-white bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-white/20">
-                        Production Live
-                      </span>
-                    </div>
-                  )}
                 </div>
 
-                {/* Content Details */}
-                <div className="p-6 sm:p-7 flex flex-col flex-grow">
-                  <div className="flex items-center justify-between text-[12px] text-body-muted mb-2">
-                    <span className="font-medium text-primary-on-dark">{proj.role}</span>
-                    <span className="bg-white/5 border border-white/10 px-2 py-0.5 rounded text-[11px]">{proj.period}</span>
-                  </div>
-
-                  <h3 className="text-[20px] sm:text-[22px] font-semibold text-white mb-2 leading-snug">
-                    {proj.title}
-                  </h3>
-
-                  <p className="text-[15px] sm:text-[16px] text-body-muted leading-[1.47] mb-4">
-                    {proj.desc}
-                  </p>
-
-                  {proj.highlights && (
-                    <ul className="mb-5 flex flex-col gap-1.5 text-[13px] text-white/80 border-l border-white/20 pl-3">
-                      {proj.highlights.map((h, hIdx) => (
-                        <li key={hIdx} className="flex items-start gap-1.5">
-                          <span className="text-primary-on-dark font-bold shrink-0">·</span>
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {/* Tech Chips */}
-                  <div className="flex flex-wrap gap-1.5 mb-6 mt-auto">
-                    {proj.tech.map((t, tIdx) => (
-                      <span 
-                        key={tIdx} 
-                        className="bg-white/10 text-white/90 text-[12px] font-normal px-2.5 py-0.5 rounded-full"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Action Link (Sky Link Blue #2997ff) */}
-                  <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                    <a 
-                      href={proj.link}
-                      target="_blank"
-                      rel="noopener noreferrer" 
-                      className="text-primary-on-dark hover:underline text-[15px] font-medium inline-flex items-center gap-1.5 transition-colors"
-                    >
-                      <span>Xem sản phẩm</span>
-                      <span className="text-[14px]">→</span>
-                    </a>
-                    <span className="text-[12px] text-body-muted">
-                      {proj.link.includes('github') ? 'Mã nguồn GitHub' : 'Trực tuyến'}
+                {proj.featured && (
+                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 translate-z-30">
+                    <span className="font-label-mono text-[10px] sm:text-[11px] font-semibold text-secondary bg-surface/90 border border-secondary/40 backdrop-blur-md px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full flex items-center gap-1.5 shadow-lg pill-3d">
+                      <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                      Production Live
                     </span>
                   </div>
+                )}
+              </div>
 
+              {/* Content info */}
+              <div className="p-5 sm:p-7 md:p-8 flex flex-col flex-grow transform-style-3d">
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5 translate-z-20">
+                  <span className="font-label-mono text-[11px] sm:text-xs text-secondary font-medium">
+                    {proj.role}
+                  </span>
+                  <span className="font-label-mono text-[10px] sm:text-[11px] text-on-surface-variant bg-white/5 border border-white/10 px-2 py-0.5 rounded">
+                    {proj.period}
+                  </span>
                 </div>
 
-              </div>
-            </Reveal>
-          ))}
-        </div>
+                <h3 className="font-headline-md text-lg sm:text-xl font-bold text-on-surface mb-2.5 group-hover:text-primary transition-colors translate-z-20">
+                  {proj.title}
+                </h3>
+                
+                <p className="font-body-md text-on-surface-variant mb-4 text-xs sm:text-sm leading-relaxed translate-z-10">
+                  {proj.desc}
+                </p>
 
+                {proj.highlights && (
+                  <ul className="mb-5 flex flex-col gap-1.5 text-xs text-on-surface-variant/90 border-l border-primary/20 pl-3 translate-z-10">
+                    {proj.highlights.map((h, hIdx) => (
+                      <li key={hIdx} className="flex items-start gap-1.5">
+                        <span className="text-primary mt-0.5 font-bold shrink-0">›</span>
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <div className="flex flex-wrap gap-1.5 mb-5 mt-auto translate-z-30">
+                  {proj.tech.map((t, tIdx) => (
+                    <TechBadge key={tIdx} name={t} size="sm" />
+                  ))}
+                </div>
+
+                <div className="pt-3.5 border-t border-white/5 flex justify-between items-center translate-z-40">
+                  <a 
+                    href={proj.link}
+                    target="_blank"
+                    rel="noopener noreferrer" 
+                    className="font-label-mono text-xs text-secondary hover:text-primary flex items-center gap-1.5 group/btn font-semibold pill-3d px-3 py-1.5 rounded-lg bg-secondary/10 border border-secondary/20 transition-all cursor-pointer"
+                  >
+                    Xem sản phẩm 
+                    <span className="material-symbols-outlined text-sm project-arrow transition-transform duration-300">
+                      arrow_outward
+                    </span>
+                  </a>
+                  {proj.link.includes('github') ? (
+                    <span className="font-label-mono text-[10px] sm:text-[11px] text-on-surface-variant/70">
+                      Mã nguồn GitHub
+                    </span>
+                  ) : (
+                    <span className="font-label-mono text-[10px] sm:text-[11px] text-on-surface-variant/70">
+                      Trang trực tiếp
+                    </span>
+                  )}
+                </div>
+              </div>
+            </TiltCard>
+          </Reveal>
+        ))}
       </div>
     </section>
   );
