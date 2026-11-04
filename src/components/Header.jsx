@@ -20,10 +20,7 @@ export default function Header() {
   return (
     <nav className="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl border-b border-white/10 shadow-sm">
       <div className="flex justify-between items-center px-4 sm:px-gutter max-w-container-max mx-auto h-16 sm:h-20">
-        <a href="#hero" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold font-label-mono text-xs sm:text-sm group-hover:bg-primary group-hover:text-background transition-all duration-300">
-            NT
-          </div>
+        <a href="#hero" className="flex items-center group">
           <span className="font-headline-md text-base sm:text-lg md:text-xl font-bold text-on-surface group-hover:text-primary transition-colors tracking-tight">
             Nguyễn Bùi Tuyển
           </span>

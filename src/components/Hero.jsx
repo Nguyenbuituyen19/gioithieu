@@ -50,24 +50,6 @@ export default function Hero() {
             </p>
           </Reveal>
 
-          {/* Highlight 3D Spatial Pills */}
-          <Reveal delay={450}>
-            <div className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3 mb-8 max-w-xl text-[11px] sm:text-xs font-label-mono">
-              <span className="pill-3d bg-white/5 border border-white/10 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-on-surface-variant flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-sm text-primary">school</span>
-                ĐH Thăng Long (GPA 3.1)
-              </span>
-              <span className="pill-3d bg-white/5 border border-white/10 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-on-surface-variant flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-sm text-secondary">business_center</span>
-                Intern @ SGOData &amp; TravelViet
-              </span>
-              <span className="pill-3d bg-white/5 border border-white/10 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-lg text-on-surface-variant flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-sm text-tertiary">rocket_launch</span>
-                Mơ Village &amp; Nice Art
-              </span>
-            </div>
-          </Reveal>
-
           {/* 3D Tactile CTA Buttons */}
           <Reveal delay={550}>
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center w-full sm:w-auto">

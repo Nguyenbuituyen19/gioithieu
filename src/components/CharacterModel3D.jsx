@@ -288,22 +288,86 @@ export default function CharacterModel3D({ className = '' }) {
           model.position.y = groundedY;
           baseYRef.current = groundedY;
 
-          // PBR Materials & Emissive Glow Tuning
+          // Upgrade materials to high-grade metallic PBR MeshPhysicalMaterial (eliminates cheap plastic look)
+          const materialCache = new Map();
+          const upgradeMaterial = (originalMat) => {
+            if (!originalMat) return originalMat;
+            const key = originalMat.name || originalMat.uuid;
+            if (materialCache.has(key)) return materialCache.get(key);
+
+            const matName = (originalMat.name || '').toLowerCase();
+            let upgraded;
+
+            if (matName.includes('main')) {
+              // Body Armor: Brushed cyber-metallic alloy with sleek automotive clearcoat
+              upgraded = new THREE.MeshPhysicalMaterial({
+                color: originalMat.color ? originalMat.color.clone() : new THREE.Color(0xe0a953),
+                metalness: 0.82,
+                roughness: 0.24,
+                clearcoat: 0.75,
+                clearcoatRoughness: 0.12,
+                reflectivity: 0.9,
+                envMapIntensity: 1.95,
+                name: 'Main_Upgraded'
+              });
+            } else if (matName.includes('grey') || matName.includes('gray')) {
+              // Mechanical Frame & Joints: Machined titanium / dark polished chrome machinery
+              upgraded = new THREE.MeshPhysicalMaterial({
+                color: originalMat.color ? originalMat.color.clone() : new THREE.Color(0x52565e),
+                metalness: 0.92,
+                roughness: 0.18,
+                clearcoat: 0.45,
+                clearcoatRoughness: 0.15,
+                reflectivity: 0.95,
+                envMapIntensity: 2.2,
+                name: 'Grey_Upgraded'
+              });
+            } else if (matName.includes('black')) {
+              // Eye Visor / Optics: High-gloss OLED reflective glass with subtle cyber-cyan tint
+              upgraded = new THREE.MeshPhysicalMaterial({
+                color: new THREE.Color(0x0b0e14),
+                emissive: new THREE.Color(0x00eefc),
+                emissiveIntensity: 0.12,
+                metalness: 0.30,
+                roughness: 0.05,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.03,
+                reflectivity: 1.0,
+                envMapIntensity: 2.6,
+                name: 'Black_Upgraded'
+              });
+            } else {
+              upgraded = new THREE.MeshPhysicalMaterial({
+                color: originalMat.color ? originalMat.color.clone() : new THREE.Color(0xffffff),
+                metalness: 0.80,
+                roughness: 0.22,
+                clearcoat: 0.60,
+                clearcoatRoughness: 0.12,
+                envMapIntensity: 1.85,
+                name: `${originalMat.name || 'Mat'}_Upgraded`
+              });
+            }
+
+            if (originalMat.map) upgraded.map = originalMat.map;
+            if (originalMat.normalMap) upgraded.normalMap = originalMat.normalMap;
+            if (originalMat.roughnessMap) upgraded.roughnessMap = originalMat.roughnessMap;
+            if (originalMat.metalnessMap) upgraded.metalnessMap = originalMat.metalnessMap;
+            if (originalMat.aoMap) upgraded.aoMap = originalMat.aoMap;
+
+            upgraded.needsUpdate = true;
+            materialCache.set(key, upgraded);
+            return upgraded;
+          };
+
+          // PBR Materials & Shadow Casting
           model.traverse((child) => {
             if (child.isMesh) {
               child.castShadow = true;
               child.receiveShadow = true;
-              if (child.material) {
-                child.material.envMapIntensity = 1.35;
-                // Boost emissive components (eyes, chest LEDs, status rings)
-                const isEmissive = 
-                  child.name.toLowerCase().includes('eye') ||
-                  child.name.toLowerCase().includes('light') ||
-                  (child.material.emissive && child.material.emissive.getHex() > 0);
-
-                if (isEmissive) {
-                  child.material.emissiveIntensity = 2.6;
-                }
+              if (Array.isArray(child.material)) {
+                child.material = child.material.map(m => upgradeMaterial(m));
+              } else if (child.material) {
+                child.material = upgradeMaterial(child.material);
               }
             }
           });
