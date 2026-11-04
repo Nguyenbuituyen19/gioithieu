@@ -1,49 +1,53 @@
-﻿import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import opentype from 'opentype.js';
 
 const COLOR_THEMES = [
   { 
-    id: 'amber', 
-    name: '🟡 Vàng Cam', 
-    color: 0xffaa00, 
-    emissive: 0x441800, 
-    lightColor: 0xff8800,
-    introColor: 0xf0f0f5,
-    introEmissive: 0x111118
+    id: 'cyan', 
+    name: '💠 Cyan Neon (Mặc định)', 
+    color: 0x00eefc, 
+    emissive: 0x004455, 
+    lightColor: 0x00eefc,
+    introColor: 0xf5fbff,
+    introEmissive: 0x051520
   },
   { 
-    id: 'mint', 
-    name: '🟢 Xanh Mint', 
-    color: 0x00f5a0, 
-    emissive: 0x003318, 
-    lightColor: 0x00d9f5,
-    introColor: 0xf0f0f5,
-    introEmissive: 0x111118
+    id: 'azure', 
+    name: '🔷 Sapphire Blue', 
+    color: 0x2288ff, 
+    emissive: 0x001f4d, 
+    lightColor: 0x3399ff,
+    introColor: 0xf5f8ff,
+    introEmissive: 0x081020
   },
   { 
-    id: 'coral', 
-    name: '🌸 Hồng San Hô', 
-    color: 0xff3b6f, 
-    emissive: 0x440018, 
-    lightColor: 0xff88a3,
-    introColor: 0xf0f0f5,
-    introEmissive: 0x111118
+    id: 'aqua', 
+    name: '⚡ Electric Aqua', 
+    color: 0x00ffcc, 
+    emissive: 0x004433, 
+    lightColor: 0x33ffdd,
+    introColor: 0xf0fff9,
+    introEmissive: 0x002218
   }
 ];
 
 /**
- * Text3DCanvas: Mobile-Optimized Real 3D WebGL Mesh Typography
- * Dynamically recalculates 3D font scale and camera field of view based on container width
- * so the 3D text fits on mobile screens (320px - 480px) without overflow.
+ * Text3DCanvas: Modern Geometric 3D Typography (Montserrat Black)
+ * Features:
+ * 1. Cyan Neon PBR Reflective Chrome & Clearcoat Shader
+ * 2. Glint Light Sweep (Moving specular point light across letters)
+ * 3. Neon Pulse (Breathing emissive glow)
+ * 4. Interactive Spring Inertia Tilt with Depth
+ * 5. Floating Ambient Cyber Sparkles
  */
 export default function Text3DCanvas() {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
-  const [activeThemeId, setActiveThemeId] = useState('amber');
+  const [activeThemeId, setActiveThemeId] = useState('cyan');
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const materialsRef = useRef({ nameMat: null, introMat: null, rimLight: null });
+  const materialsRef = useRef({ nameMat: null, introMat: null, rimLight: null, sweepLight: null, particleMat: null });
   const themeRef = useRef(COLOR_THEMES[0]);
   const textGroupRef = useRef(null);
 
@@ -63,7 +67,7 @@ export default function Text3DCanvas() {
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-    camera.position.set(0, 0, isMobile ? 115 : 105);
+    camera.position.set(0, 0, isMobile ? 118 : 108);
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -76,24 +80,51 @@ export default function Text3DCanvas() {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.35;
 
-    // 2. Studio Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
+    // 2. Studio Cyber Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
-    keyLight.position.set(20, 30, 50);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.8);
+    keyLight.position.set(20, 35, 55);
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(themeRef.current.lightColor, 3.5);
-    rimLight.position.set(-30, -10, 30);
+    const rimLight = new THREE.DirectionalLight(themeRef.current.lightColor, 4.0);
+    rimLight.position.set(-35, -15, 35);
     scene.add(rimLight);
     materialsRef.current.rimLight = rimLight;
 
-    const topSpecular = new THREE.PointLight(0xffffff, 1.8, 120);
-    topSpecular.position.set(0, 40, 40);
+    // Moving Specular Light Sweep (Glint effect across letters)
+    const sweepLight = new THREE.PointLight(themeRef.current.lightColor, 4.5, 120);
+    sweepLight.position.set(-50, 0, 35);
+    scene.add(sweepLight);
+    materialsRef.current.sweepLight = sweepLight;
+
+    const topSpecular = new THREE.PointLight(0xffffff, 2.0, 130);
+    topSpecular.position.set(0, 45, 45);
     scene.add(topSpecular);
 
-    // 3. Text Group
+    // 3. Floating Ambient Cyber Sparkles
+    const particleCount = 26;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      particlePositions[i * 3] = (Math.random() - 0.5) * 170;
+      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * 60;
+      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 45;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMat = new THREE.PointsMaterial({
+      color: themeRef.current.lightColor,
+      size: 1.5,
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending
+    });
+    const particles = new THREE.Points(particleGeo, particleMat);
+    scene.add(particles);
+    materialsRef.current.particleMat = particleMat;
+
+    // 4. Text Group
     const textGroup = new THREE.Group();
     scene.add(textGroup);
     textGroupRef.current = textGroup;
@@ -113,8 +144,8 @@ export default function Text3DCanvas() {
       return shapePath.toShapes(true);
     };
 
-    // 4. Load Font & Generate Extruded 3D Meshes
-    const fontUrl = `${import.meta.env.BASE_URL}fonts/baloo2-extrabold.ttf`;
+    // 5. Load Modern Geometric Font (Montserrat Black) & Generate 3D Extruded Meshes
+    const fontUrl = `${import.meta.env.BASE_URL}fonts/montserrat-black.ttf`;
 
     fetch(fontUrl)
       .then((res) => res.arrayBuffer())
@@ -124,7 +155,7 @@ export default function Text3DCanvas() {
         const font = opentype.parse(buffer);
 
         // Line 1: "Chào, mình là"
-        const introShapes = createShapesFromText(font, 'Chào, mình là', 13);
+        const introShapes = createShapesFromText(font, 'Chào, mình là', 12.5);
         const introGeo = new THREE.ExtrudeGeometry(introShapes, {
           depth: 3.2,
           bevelEnabled: true,
@@ -137,22 +168,22 @@ export default function Text3DCanvas() {
         const introMat = new THREE.MeshPhysicalMaterial({
           color: themeRef.current.introColor,
           emissive: themeRef.current.introEmissive,
-          roughness: 0.25,
+          roughness: 0.22,
           metalness: 0.2,
-          clearcoat: 0.6,
-          clearcoatRoughness: 0.15
+          clearcoat: 0.8,
+          clearcoatRoughness: 0.1
         });
         materialsRef.current.introMat = introMat;
 
         const introMesh = new THREE.Mesh(introGeo, introMat);
 
-        // Line 2: "Nguyễn Bùi Tuyển"
-        const nameShapes = createShapesFromText(font, 'Nguyễn Bùi Tuyển', 22);
+        // Line 2: "Nguyễn Bùi Tuyển" - Sharp, Beveled, Chrome-Clearcoat Cyan Neon
+        const nameShapes = createShapesFromText(font, 'Nguyễn Bùi Tuyển', 21);
         const nameGeo = new THREE.ExtrudeGeometry(nameShapes, {
-          depth: 6.0,
+          depth: 6.8,
           bevelEnabled: true,
-          bevelThickness: 1.6,
-          bevelSize: 0.9,
+          bevelThickness: 1.8,
+          bevelSize: 0.95,
           bevelSegments: 4
         });
         nameGeo.computeVertexNormals();
@@ -160,16 +191,17 @@ export default function Text3DCanvas() {
         const nameMat = new THREE.MeshPhysicalMaterial({
           color: themeRef.current.color,
           emissive: themeRef.current.emissive,
-          roughness: 0.18,
-          metalness: 0.25,
-          clearcoat: 0.9,
-          clearcoatRoughness: 0.1
+          emissiveIntensity: 1.0,
+          roughness: 0.12,
+          metalness: 0.38,
+          clearcoat: 1.0,
+          clearcoatRoughness: 0.06
         });
         materialsRef.current.nameMat = nameMat;
 
         const nameMesh = new THREE.Mesh(nameGeo, nameMat);
 
-        introMesh.position.set(0, 13, 0);
+        introMesh.position.set(0, 14, 0);
         nameMesh.position.set(0, -13, 0);
 
         textGroup.add(introMesh);
@@ -192,7 +224,7 @@ export default function Text3DCanvas() {
         console.error('Failed to generate 3D text meshes:', err);
       });
 
-    // 5. Mouse/Touch Interaction for 3D Tilt
+    // 6. Interactive Mouse/Touch Tilt
     let targetRotX = 0;
     let targetRotY = 0;
 
@@ -220,7 +252,7 @@ export default function Text3DCanvas() {
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
     container.addEventListener('mouseleave', handleMouseLeave);
 
-    // 6. Resize Observer - Auto scales 3D model & camera on mobile rotation/resize
+    // 7. Resize Observer - Auto scales 3D model & camera on mobile rotation/resize
     const resizeObserver = new ResizeObserver(() => {
       if (!container || isDestroyed) return;
       const w = container.clientWidth;
@@ -229,7 +261,7 @@ export default function Text3DCanvas() {
         const h = mob ? 185 : 230;
 
         camera.aspect = w / h;
-        camera.position.z = mob ? 115 : 105;
+        camera.position.z = mob ? 118 : 108;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
 
@@ -241,7 +273,7 @@ export default function Text3DCanvas() {
     });
     resizeObserver.observe(container);
 
-    // 7. Pause when offscreen
+    // 8. Pause when offscreen
     const intersectionObserver = new IntersectionObserver(
       ([entry]) => {
         isVisible = entry.isIntersecting;
@@ -250,8 +282,9 @@ export default function Text3DCanvas() {
     );
     intersectionObserver.observe(container);
 
-    // 8. Render Loop
+    // 9. Render Loop: Glint Sweep + Neon Pulse + Floating Motion
     let animId;
+    let lastTime = performance.now();
     const startTime = performance.now();
 
     const animate = () => {
@@ -260,11 +293,36 @@ export default function Text3DCanvas() {
       if (!isVisible) return;
 
       const now = performance.now();
+      const delta = (now - lastTime) * 0.001;
+      lastTime = now;
       const time = (now - startTime) * 0.001;
 
-      textGroup.rotation.y += (targetRotY - textGroup.rotation.y) * 0.06;
-      textGroup.rotation.x += (targetRotX - textGroup.rotation.x) * 0.06;
-      textGroup.position.y = Math.sin(time * 1.5) * 1.0;
+      // Smooth inertia tilt
+      textGroup.rotation.y += (targetRotY - textGroup.rotation.y) * 0.07;
+      textGroup.rotation.x += (targetRotX - textGroup.rotation.x) * 0.07;
+      textGroup.position.y = Math.sin(time * 1.6) * 1.2;
+
+      // 1. Light Sweep across the letters (Chrome Glint effect)
+      if (materialsRef.current.sweepLight) {
+        materialsRef.current.sweepLight.position.x = Math.sin(time * 1.4) * 65;
+        materialsRef.current.sweepLight.position.y = Math.cos(time * 1.4) * 10;
+      }
+
+      // 2. Neon Pulse Emissive Breathing
+      if (materialsRef.current.nameMat) {
+        const pulse = 1.0 + Math.sin(time * 2.4) * 0.45;
+        materialsRef.current.nameMat.emissiveIntensity = pulse;
+      }
+
+      // 3. Floating Cyber Particles
+      const pArr = particleGeo.attributes.position.array;
+      for (let i = 0; i < particleCount; i++) {
+        pArr[i * 3 + 1] += delta * 7;
+        if (pArr[i * 3 + 1] > 35) {
+          pArr[i * 3 + 1] = -35;
+        }
+      }
+      particleGeo.attributes.position.needsUpdate = true;
 
       renderer.render(scene, camera);
     };
@@ -278,6 +336,8 @@ export default function Text3DCanvas() {
       container.removeEventListener('mouseleave', handleMouseLeave);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
+      particleGeo.dispose();
+      particleMat.dispose();
       renderer.dispose();
     };
   }, []);
@@ -294,6 +354,12 @@ export default function Text3DCanvas() {
     }
     if (materialsRef.current.rimLight) {
       materialsRef.current.rimLight.color.setHex(theme.lightColor);
+    }
+    if (materialsRef.current.sweepLight) {
+      materialsRef.current.sweepLight.color.setHex(theme.lightColor);
+    }
+    if (materialsRef.current.particleMat) {
+      materialsRef.current.particleMat.color.setHex(theme.lightColor);
     }
   };
 
@@ -316,15 +382,15 @@ export default function Text3DCanvas() {
       {/* Palette Selector Bar - Compact & wrap-friendly on mobile */}
       <div className="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 mt-2 bg-white/5 border border-white/10 p-1 rounded-xl backdrop-blur-md max-w-full">
         <span className="font-label-mono text-[9px] sm:text-[10px] text-on-surface-variant/70 px-1.5 uppercase tracking-wider font-semibold">
-          Màu chữ:
+          Sắc độ xanh:
         </span>
         {COLOR_THEMES.map((theme) => (
           <button
             key={theme.id}
             onClick={() => handleColorChange(theme.id)}
-            className={`font-label-mono text-[10px] sm:text-[11px] px-2 py-0.5 rounded-lg transition-all cursor-pointer ${
+            className={`font-label-mono text-[10px] sm:text-[11px] px-2.5 py-0.5 rounded-lg transition-all cursor-pointer ${
               activeThemeId === theme.id
-                ? 'bg-white/15 text-white border border-white/30 font-bold shadow-sm'
+                ? 'bg-secondary/20 text-secondary border border-secondary/40 font-bold shadow-[0_0_10px_rgba(0,238,252,0.25)]'
                 : 'text-on-surface-variant hover:text-white hover:bg-white/5'
             }`}
           >
